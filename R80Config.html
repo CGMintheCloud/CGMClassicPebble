@@ -53,44 +53,70 @@ function clearFunction() {
 				<strong>Enter T1 Name:</strong>
 				
 		    <input type="text" name="t1name" id="t1name" />
-	
-</div>
-    <!-- If MG/DL Form is checked -->
+      <!-- If MG/DL Form is checked -->
     <div id="mgdl_form_fields">
-          <legend><strong>Vibration Settings</strong></legend>
+        <legend><strong>Settings:</strong></legend>
+        <p>
+          <label for="vibeon">Control Vibration</label>
+          <select name="vibeon" id="vibeon">
+            <option value="1" selected>ON</option>
+            <option value="0">OFF</option>
+          </select>
+          <br>
+          <label for="rawon">Control All Raw</label>
+          <select name="rawon" id="rawon">
+            <option value="1" selected>ON</option>
+            <option value="0">OFF</option>
+          </select>
+          <label for="urawon"><br>
+            Control Unfiltered Raw</label>
+          <select name="urawon" id="urawon">
+            <option value="1" selected>ON</option>
+            <option value="0">OFF</option>
+          </select>
+          <label for="animateon"><br>
+            Control Animations</label>
+          <select name="animateon" id="animateon">
+            <option value="1" selected>ON</option>
+            <option value="0">OFF</option>
+          </select>
+        </p>
+        <p>
           <label for="mglowbg">Select Low BG Level</label>
-	  <select name="mglowbg" id="mglowbg">
-                        <option value="60">60</option>        
-                        <option value="65">65</option> 
-	  					<option value="70">70</option>
-						<option value="75">75</option>
-						<option value="80">80</option>
-						<option value="90">90</option>
-						<option value="100">100</option>
-						<option value="110">110</option>
-						<option value="120">120</option>
-	  </select>
-           <label for="mghighbg">Select High BG Level</label>
-					<select name="mghighbg" id="mghighbg">
-						<option value="130">130</option>
-						<option value="140">140</option>
-						<option value="150">150</option>
-						<option value="160">160</option>
-						<option value="170">170</option>
-						<option value="180">180</option>
-						<option value="190">190</option>
-						<option value="200">200</option>
-						<option value="210">210</option>
-						<option value="220">220</option>
-						<option value="230">230</option>
-						<option value="240">240</option>
-						<option value="250">250</option>
-						<option value="260">260</option>
-						<option value="270">270</option>
-						<option value="280">280</option>
-						<option value="290">290</option>
-						<option value="300">300</option>
-					</select> 
+          <select name="mglowbg" id="mglowbg">
+            <option value="60">60</option>        
+            <option value="65">65</option> 
+            <option value="70">70</option>
+            <option value="75">75</option>
+            <option value="80">80</option>
+            <option value="90">90</option>
+            <option value="100">100</option>
+            <option value="110">110</option>
+            <option value="120">120</option>
+          </select>
+          <label for="mghighbg">Select High BG Level</label>
+          <select name="mghighbg" id="mghighbg">
+            <option value="130">130</option>
+            <option value="140">140</option>
+            <option value="150">150</option>
+            <option value="160">160</option>
+            <option value="170">170</option>
+            <option value="180">180</option>
+            <option value="190">190</option>
+            <option value="200">200</option>
+            <option value="210">210</option>
+            <option value="220">220</option>
+            <option value="230">230</option>
+            <option value="240">240</option>
+            <option value="250">250</option>
+            <option value="260">260</option>
+            <option value="270">270</option>
+            <option value="280">280</option>
+            <option value="290">290</option>
+            <option value="300">300</option>
+          </select>
+        </p>
+        </p> 
                     
                   </div>  
            
@@ -192,7 +218,6 @@ function clearFunction() {
 						<option value="1">Yes</option>
 						<option value="0">No</option>
 					</select>
-        <p>
 		<div data-role="fieldcontain">
 	  <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
       <legend><strong>Choose 12 or 24 hour:</strong></legend>
@@ -206,10 +231,8 @@ function clearFunction() {
 		  </div>
   </div>
 	<div class="ui-grid-solo">
-		<div class="ui-block-a"><button type="submit" data-theme="a" id="b-default">Default Settings</div>
-	</div>
-
-    <div class="ui-body ui-body-b">
+		<div class="ui-block-a"><button type="submit" data-theme="a" id="b-default">Default Settings
+	  <div class="ui-body ui-body-b">
 				<fieldset class="ui-grid-a">
 					<div class="ui-block-a"><button type="submit" data-theme="d" id="b-cancel">Cancel</button></div>
 					<div class="ui-block-b"><button type="submit" data-theme="a" id="b-submit">Submit</button></div>
@@ -252,7 +275,13 @@ if (console && console.log && console.log.call) {
 			'highvibe' : $("#highvibe option:selected").val(),
 			'vibepattern' : $("#vibepattern option:selected").val(),
 			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
-			'rawvibrate' : $("#rawvibrate option:selected").val()
+			'rawvibrate' : $("#rawvibrate option:selected").val(),
+			'vibeon' : $("#vibeon option:selected").val(),
+			'rawon' : $("#rawon option:selected").val(),
+			'urawon' : $("#urawon option:selected").val(),
+			'animateon' : $("#animateon option:selected").val(),
+
+
 			
         }
         try {
@@ -292,6 +321,10 @@ if (console && console.log && console.log.call) {
 		$("#rawvibrate").val('1').selectmenu("refresh");
 		$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 		$("input[value='24']").attr("checked",false).checkboxradio("refresh");
+		$("#vibeon").val('1').selectmenu("refresh");
+		$("#rawon").val('1').selectmenu("refresh");
+		$("#urawon").val('1').selectmenu("refresh");
+		$("#animateon").val('1').selectmenu("refresh");
 	  }
       
       function getOptions() {
@@ -328,6 +361,12 @@ if (console && console.log && console.log.call) {
 			$("#vibepattern").val(opts.vibepattern).selectmenu("refresh");
 			$("#rawvibrate").val(opts.rawvibrate).selectmenu("refresh");
 			$("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
+			$("#vibeon").val(opts.vibeon).selectmenu("refresh");
+			$("#rawon").val(opts.rawon).selectmenu("refresh");
+			$("#urawon").val(opts.urawon).selectmenu("refresh");
+			$("#animateon").val(opts.animateon).selectmenu("refresh");
+
+
         }else{
 			console.log("no data");
         	$('#status').text('no data');
