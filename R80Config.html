@@ -53,35 +53,10 @@ function clearFunction() {
 				<strong>Enter T1 Name:</strong>
 				
 		    <input type="text" name="t1name" id="t1name" />
+</div>
       <!-- If MG/DL Form is checked -->
     <div id="mgdl_form_fields">
-        <legend><strong>Settings:</strong></legend>
-        <p>
-          <label for="vibeon">Control Vibration</label>
-          <select name="vibeon" id="vibeon">
-            <option value="1" selected>ON</option>
-            <option value="0">OFF</option>
-          </select>
-          <br>
-          <label for="rawon">Control All Raw</label>
-          <select name="rawon" id="rawon">
-            <option value="1" selected>ON</option>
-            <option value="0">OFF</option>
-          </select>
-          <label for="urawon"><br>
-            Control Unfiltered Raw</label>
-          <select name="urawon" id="urawon">
-            <option value="1" selected>ON</option>
-            <option value="0">OFF</option>
-          </select>
-          <label for="animateon"><br>
-            Control Animations</label>
-          <select name="animateon" id="animateon">
-            <option value="1" selected>ON</option>
-            <option value="0">OFF</option>
-          </select>
-        </p>
-        <p>
+          <legend><strong>Vibration Settings</strong></legend>
           <label for="mglowbg">Select Low BG Level</label>
           <select name="mglowbg" id="mglowbg">
             <option value="60">60</option>        
@@ -115,8 +90,6 @@ function clearFunction() {
             <option value="290">290</option>
             <option value="300">300</option>
           </select>
-        </p>
-        </p> 
                     
                   </div>  
            
@@ -218,6 +191,27 @@ function clearFunction() {
 						<option value="1">Yes</option>
 						<option value="0">No</option>
 					</select>
+					<label for="vibeon">Control Vibration</label>
+					<select name="vibeon" id="vibeon">
+						<option value="1" selected>ON</option>
+						<option value="0">OFF</option>
+					</select>
+					<label for="rawon">Control All Raw</label>
+					<select name="rawon" id="rawon">
+						<option value="1" selected>ON</option>
+						<option value="0">OFF</option>
+					</select>
+					<label for="urawon">Control Unfiltered Raw</label>
+					<select name="urawon" id="urawon">
+						<option value="1" selected>ON</option>
+						<option value="0">OFF</option>
+					</select>
+					<label for="animateon">Control Animations</label>
+					<select name="animateon" id="animateon">
+						<option value="1" selected>ON</option>
+						<option value="0">OFF</option>
+					</select>
+	<p>
 		<div data-role="fieldcontain">
 	  <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
       <legend><strong>Choose 12 or 24 hour:</strong></legend>
@@ -274,15 +268,13 @@ if (console && console.log && console.log.call) {
 			'lowvibe' : $("#lowvibe option:selected").val(),
 			'highvibe' : $("#highvibe option:selected").val(),
 			'vibepattern' : $("#vibepattern option:selected").val(),
-			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
 			'rawvibrate' : $("#rawvibrate option:selected").val(),
 			'vibeon' : $("#vibeon option:selected").val(),
 			'rawon' : $("#rawon option:selected").val(),
 			'urawon' : $("#urawon option:selected").val(),
 			'animateon' : $("#animateon option:selected").val(),
+			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
 
-
-			
         }
         try {
           if (window.localStorage && window.localStorage.setItem) {
