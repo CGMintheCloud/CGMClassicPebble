@@ -285,7 +285,7 @@ if (console && console.log && console.log.call) {
 			highbg = 'mmhighbg';
 		}
         var options = {
-		    'mode': $("#mode").val(),
+		    'mode': $("#mode option:selected").val(),
             'endpoint': $("#endpoint").val(),
 			'accountName': $("#accountName").val(),
 			'password': $("#password").val(),
