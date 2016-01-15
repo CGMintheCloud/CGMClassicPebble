@@ -321,7 +321,7 @@ if (console && console.log && console.log.call) {
 		_raw = window.localStorage && window.localStorage.cgmOpts
             ? window.localStorage.cgmOpts : null;
         opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
-		$("#mode").val(opts && opts.mode ? opts.mode : '');
+		$("#mode").val(opts && opts.mode ? opts.mode : '').selectmenu("refresh");
 		$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 		$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 		$("#password").val(opts && opts.password ? opts.password : '');
@@ -355,7 +355,7 @@ if (console && console.log && console.log.call) {
 			opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
 			$('#status').text(['has opts', JSON.stringify(opts)].join(' '));
 			console.log("opts", JSON.stringify(opts));
-			$("mode").val(opts && opts.mode ? opts.mode : '');
+			$("mode").val(opts && opts.mode ? opts.mode : '').selectmenu("refresh");
 			$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 			$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 			$("#password").val(opts && opts.password ? opts.password : '');
