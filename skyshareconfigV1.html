@@ -1,4 +1,11 @@
 
+<!--  ML - There is a bug right now in the loading of the username/password for Non-US-Share.  Right now the IDs for the two separate text
+	fields in both forms are named the same so when it is loaded, it only puts it in the first one.
+	We should consider only have one set of username/password fields (since most likely users won't have both US and NON-US
+	share functionality.  Also, I fixed it so it loads the mode now but the loading does not cause the Nightscout or Share
+	text boxes to appear.  Going to need to add an onchange event handler to the select that will force the siblings
+	to be displayed properly.
+-->
 
 <!DOCTYPE html>
 <html>
