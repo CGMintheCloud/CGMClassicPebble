@@ -48,9 +48,9 @@
 				</form>
 				<form name="Non_US_Share" id="Non_US_Share" style="display:none">
 					<label for="accountName">Share Username: </label>
-					<input type="text" name="accountName" id="accountName" value="" autocapitalize="off"autocorrect="off"/>
+					<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
 					<label for="password">Share Password: </label>
-					<input type="password" name="password" id="password" value="" />
+					<input type="password" name="n_password" id="n_password" value="" />
 					<label for="remember">Remember Password</label>
 					<input type="checkbox" name="remember" id="remember" />
 				</form>
@@ -289,6 +289,9 @@
 					var checkradio = null;
 					var lowbg = null;
 					var highbg = null;
+					var u_name = null;
+					var p_w = null;
+					var endpoint = null;
 					if ($('input[name=tipo_cadastro]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
 						highbg = 'mghighbg';
@@ -296,11 +299,25 @@
 						lowbg = 'mmlowbg';
 						highbg = 'mmhighbg';
 					}
+					// establish the variables to be saved
+					if ($("#mode option:selected").val() == "US_Share") {
+						u_name = $("#accountName").val();
+						p_w = $("#password").val();
+						endpoint = "";
+					} else if ($("#mode option:selected").val() == "Non_US_Share") {
+						u_name = $("#n_accountName").val();
+						p_w = $("#n_password").val();
+						endpoint = "";
+					} else if ($("#mode option:selected").val() == "Nightscout") {
+						u_name = ""
+						p_w = "";
+						endpoint = $("#endpoint").val();
+					}
 					var options = {
 						'mode': $("#mode option:selected").val(),
-						'endpoint': $("#endpoint").val(),
-						'accountName': $("#accountName").val(),
-						'password': $("#password").val(),
+						'endpoint': endpoint,
+						'accountName': u_name,
+						'password': p_w,
 						't1name' : $("#t1name").val(),
 						'radio' : $('input[name=tipo_cadastro]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
@@ -333,6 +350,17 @@
 					? window.localStorage.cgmOpts : null;
 					opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
 					$("#mode").val(opts && opts.mode ? opts.mode : '').selectmenu("refresh");
+					
+					// load username/password to correct variables if it's Sharedata as found
+					if (opts && opts.mode) {
+						if (opts.mode == "US_Share") {
+							$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+							$("#password").val(opts && opts.password ? opts.password : '');
+						} else if (opts.mode == "Non_US_Share") {
+							$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
+							$("#n_password").val(opts && opts.password ? opts.password : '');
+						}
+					}
 					$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 					$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 					$("#password").val(opts && opts.password ? opts.password : '');
@@ -367,9 +395,21 @@
 						$('#status').text(['has opts', JSON.stringify(opts)].join(' '));
 						console.log("opts", JSON.stringify(opts));
 						$("#mode").val(opts.mode).selectmenu("refresh");
+
+						// load username/password to correct variables if it's Sharedata as found
+						if (opts.mode) {
+							if (opts.mode == "US_Share") {
+								$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+								$("#password").val(opts && opts.password ? opts.password : '');
+							} else if (opts.mode == "Non_US_Share") {
+								$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
+								$("#n_password").val(opts && opts.password ? opts.password : '');
+							}
+						}
+
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
-						$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-						$("#password").val(opts && opts.password ? opts.password : '');
+						// $("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+						// $("#password").val(opts && opts.password ? opts.password : '');
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
 						if (opts.radio == 'mgdl_form'){
 							$("input[value='" + opts.radio + "']").attr("checked",true).checkboxradio("refresh");
