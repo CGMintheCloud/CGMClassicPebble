@@ -348,10 +348,15 @@
 						if (opts.mode == "US_Share") {
 							$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 							$("#password").val(opts && opts.password ? opts.password : '');
+							$("#US_Share").show().siblings().hide();
 						} else if (opts.mode == "Non_US_Share") {
 							$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
 							$("#n_password").val(opts && opts.password ? opts.password : '');
+							$("#Non_US_Share").show().siblings().hide();
+						} else if (opts.mode == "Nightscout") {
+							$("#Nightscout").show().siblings().hide();
 						}
+						$("#form-shower").show();
 					}
 					$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 					$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
@@ -393,10 +398,17 @@
 							if (opts.mode == "US_Share") {
 								$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 								$("#password").val(opts && opts.password ? opts.password : '');
+								$("#US_Share").show().siblings().hide();
 							} else if (opts.mode == "Non_US_Share") {
 								$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
 								$("#n_password").val(opts && opts.password ? opts.password : '');
+								$("#Non_US_Share").show().siblings().hide();
+							} else if (opts.mode == "Nightscout") {
+								$("#Nightscout").show().siblings().hide();
 							}
+							$("#form-shower").show();
+						
+							
 						}
 
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
