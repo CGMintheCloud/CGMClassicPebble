@@ -31,37 +31,38 @@
 							<option value="Nightscout">Nightscout</option>
 						</select>
 					</form>
+					<form name="US_Share" id="US_Share" style="display:none">
+						<label for="accountName">Share Username: </label>
+						<input type="text" name="accountName" id="accountName" value="" autocapitalize="off" autocorrect="off"/>
+						<label for="password">Share Password: </label>
+						<input type="password" name="password" id="password" value="" />
+						<label for="remember">Remember Password</label>
+						<input type="checkbox" name="remember" id="remember" />
+					</form>
+					<form name="Non_US_Share" id="Non_US_Share" style="display:none">
+						<label for="accountName">Share Username: </label>
+						<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
+						<label for="password">Share Password: </label>
+						<input type="password" name="n_password" id="n_password" value="" />
+						<label for="remember">Remember Password</label>
+						<input type="checkbox" name="remember" id="remember" />
+					</form>
+					<form name="Nightscout" id="Nightscout" style="display:none">
+						<script>
+							function clearFunction() {
+								document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
+							}
+						</script>
+						<label for="endpoint">
+							<strong>Enter Data Endpoint:
+							</strong>
+						</label>
+						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
+						<div id="message">ie:https://name.azurewebsites.net/pebble</div>
+					</form>      
+					<tt class="hidden" id="status"></tt>
 				</div>
-				<form name="US_Share" id="US_Share" style="display:none">
-					<label for="accountName">Share Username: </label>
-					<input type="text" name="accountName" id="accountName" value="" autocapitalize="off" autocorrect="off"/>
-					<label for="password">Share Password: </label>
-					<input type="password" name="password" id="password" value="" />
-					<label for="remember">Remember Password</label>
-					<input type="checkbox" name="remember" id="remember" />
-				</form>
-				<form name="Non_US_Share" id="Non_US_Share" style="display:none">
-					<label for="accountName">Share Username: </label>
-					<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
-					<label for="password">Share Password: </label>
-					<input type="password" name="n_password" id="n_password" value="" />
-					<label for="remember">Remember Password</label>
-					<input type="checkbox" name="remember" id="remember" />
-				</form>
-				<form name="Nightscout" id="Nightscout" style="display:none">
-					<script>
-						function clearFunction() {
-							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
-						}
-					</script>
-					<label for="endpoint">
-						<strong>Enter Data Endpoint:
-						</strong>
-					</label>
-					<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
-					<div id="message">ie:https://name.azurewebsites.net/pebble</div>
-				</form>      
-				<tt class="hidden" id="status"></tt>
+
 			</div>
 			<div data-role="fieldcontain">
 				
