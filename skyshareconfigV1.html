@@ -49,19 +49,17 @@
 					<input type="checkbox" name="remember" id="remember" />
 				</form>
 				<form name="Nightscout" id="Nightscout" style="display:none">
-					<div data-role="fieldcontain">
-						<script>
-							function clearFunction() {
-								document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
-							}
-						</script>
-						<label for="endpoint">
-							<strong>Enter Data Endpoint:
-							</strong>
-						</label>
-						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
-						<div id="message">ie:https://name.azurewebsites.net/pebble</div>
-					</div>
+					<script>
+						function clearFunction() {
+							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
+						}
+					</script>
+					<label for="endpoint">
+						<strong>Enter Data Endpoint:
+						</strong>
+					</label>
+					<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
+					<div id="message">ie:https://name.azurewebsites.net/pebble</div>
 				</form>      
 				<tt class="hidden" id="status"></tt>
 			</div>
