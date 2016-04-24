@@ -211,6 +211,20 @@ function clearFunction() {
 						<option value="1" selected>ON</option>
 						<option value="0">OFF</option>
 					</select>
+					<label for="feeling">Control Animations</label>
+					<select name="feeling" id="feeling">
+						<option value="0" selected>Happy</option>
+						<option value="1">Funny</option>
+						<option value="2" selected>Awesome</option>
+						<option value="3">Blessed</option>
+						<option value="4" selected>Loved</option>
+						<option value="5">Accomplished</option>
+						<option value="6" selected>Festive</option>
+						<option value="7">Fabulous</option>
+						<option value="8" selected>Cute</option>
+						<option value="9">Angry</option>
+						<option value="10" selected>Poopy</option>
+					</select>
 	<p>
 		<div data-role="fieldcontain">
 	  <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
@@ -273,6 +287,7 @@ if (console && console.log && console.log.call) {
 			'rawon' : $("#rawon option:selected").val(),
 			'urawon' : $("#urawon option:selected").val(),
 			'animateon' : $("#animateon option:selected").val(),
+			'feeling' : $("#feeling option:selected").val(),
 			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
 
         }
@@ -316,6 +331,7 @@ if (console && console.log && console.log.call) {
 		$("#vibeon").val('1').selectmenu("refresh");
 		$("#rawon").val('1').selectmenu("refresh");
 		$("#urawon").val('1').selectmenu("refresh");
+		$("#feeling").val('0').selectmenu("refresh");
 		$("#animateon").val('1').selectmenu("refresh");
 	  }
       
@@ -356,6 +372,7 @@ if (console && console.log && console.log.call) {
 			$("#vibeon").val(opts.vibeon).selectmenu("refresh");
 			$("#rawon").val(opts.rawon).selectmenu("refresh");
 			$("#urawon").val(opts.urawon).selectmenu("refresh");
+			$("#feeling").val(opts.feeling).selectmenu("refresh");
 			$("#animateon").val(opts.animateon).selectmenu("refresh");
 
 
