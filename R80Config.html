@@ -400,7 +400,10 @@ if (console && console.log && console.log.call) {
         });
 
         $("#b-submit").click(function() {
-          console.log("Submit");
+        console.log("Submit"); 
+	var return_to = getQueryParam('return_to', 'pebblejs://close#'); 
+	document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions())); 
+
           $('#status').text('submitting');
 
           var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
