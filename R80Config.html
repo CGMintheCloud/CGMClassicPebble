@@ -401,44 +401,48 @@ if (console && console.log && console.log.call) {
 					return defaultValue || false;
 				}
 			
-
-      $().ready(function() {
-        if (window.location.hash.indexOf("debug") > -1) {
-          $('#status').removeClass('hidden');
-        }
-        $('#status').text('ready');
-        $('#status').text('setting up events');
-		//localStorage.clear();
-		
-
-        $("#b-cancel").click(function() {
-          console.log("Cancel");
-          $('#status').text('canceling');
-          document.location = "pebblejs://close";
-        });
-
-        $("#b-submit").click(function() {
-        console.log("Submit"); 
-	var return_to = getQueryParam('return_to', 'pebblejs://close#'); 
-	document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions())); 
-
-          $('#status').text('submitting');
-
-          //var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
-          //console.log("Warping to: " + location);
-          //$('#status').text('closing');
-          //document.location = location;
-          // console.log('saved', window.localStorage.cgmOpts);
-        });
-		
-		$("#b-default").click(function() {
-			console.log("Default");
-			localStorage.clear();
-			loadDefaults();
-		});
-      });
-      $('#main').bind('pageinit', getOptions());
-});
+				$().ready(function() {
+					if (window.location.hash.indexOf("debug") > -1) {
+						$('#status').removeClass('hidden');
+					}
+					$('#status').text('ready');
+					$('#status').text('setting up events');
+					//localStorage.clear();
+	
+					$("#b-cancel").click(function() {
+						console.log("Cancel");
+						$('#status').text('canceling');
+						document.location = "pebblejs://close";
+					});
+					
+					$("#b-submit").click(function() {
+						console.log("Submit");
+						//var return_to = getQueryParam('return_to', 'pebblejs://close#');
+						//var location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
+						//  console.log("Warping to: " + location);
+						//document.location = location;
+						var return_to = getQueryParam('return_to', 'pebblejs://close#');
+						document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
+						
+						
+						//	location.href = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions));
+						$('#status').text('submitting');
+						
+						//  var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
+						//   console.log("Warping to: " + location);
+						//    $('#status').text('closing');
+						//    document.location = location;
+						// console.log('saved', window.localStorage.cgmOpts);
+					});
+					
+					$("#b-default").click(function() {
+						console.log("Default");
+						localStorage.clear();
+						loadDefaults();
+					});
+				});
+				$('#main').bind('pageinit', getOptions());
+			});
 function onchange_handler(obj, id) {
     var other_id = (id == 'mgdl')? 'mmol' : 'mgdl';
     if(obj.checked) {
