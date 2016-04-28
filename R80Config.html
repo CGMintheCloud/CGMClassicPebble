@@ -227,6 +227,11 @@ function clearFunction() {
 						<option value="11">Poopy</option>
 						<option value="12">Cheers!</option>
 					</select>
+					<label for="mycolors">My Colors</label>
+					<select name="mycolors" id="mycolors">
+						<option value="0" selected>standardcolors</option>
+						<option value="1">sunshinecolors</option>
+					</select>
 	<p>
 		<div data-role="fieldcontain">
 	  <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
@@ -290,6 +295,7 @@ if (console && console.log && console.log.call) {
 			'urawon' : $("#urawon option:selected").val(),
 			'animateon' : $("#animateon option:selected").val(),
 			'feeling' : $("#feeling option:selected").val(),
+			'mycolors' : $("#mycolors option:selected").val(),
 			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
 
         }
@@ -335,6 +341,7 @@ if (console && console.log && console.log.call) {
 		$("#urawon").val('1').selectmenu("refresh");
 		$("#animateon").val('1').selectmenu("refresh");
 		$("#feeling").val('0').selectmenu("refresh");
+		$("#mycolors").val('0').selectmenu("refresh");
 	  }
       
       function getOptions() {
@@ -376,6 +383,7 @@ if (console && console.log && console.log.call) {
 			$("#urawon").val(opts.urawon).selectmenu("refresh");
 			$("#animateon").val(opts.animateon).selectmenu("refresh");
 			$("#feeling").val(opts.feeling).selectmenu("refresh");
+			$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 
 
         }else{
