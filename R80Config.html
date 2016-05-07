@@ -193,24 +193,29 @@ function clearFunction() {
 					</select>
 					<label for="vibeon">Control Vibration</label>
 					<select name="vibeon" id="vibeon">
-						<option value="1" selected>ON</option>
-						<option value="0">OFF</option>
+						<option value="1" selected>On</option>
+						<option value="0">Off</option>
 					</select>
 					<label for="rawon">Control All Raw</label>
 					<select name="rawon" id="rawon">
-						<option value="1" selected>ON</option>
-						<option value="0">OFF</option>
+						<option value="1" selected>On</option>
+						<option value="0">Off</option>
 					</select>
 					<label for="urawon">Control Unfiltered Raw</label>
 					<select name="urawon" id="urawon">
-						<option value="1" selected>ON</option>
-						<option value="0">OFF</option>
+						<option value="1" selected>On</option>
+						<option value="0">Off</option>
 					</select>
 					<label for="animateon">Control Animations</label>
 					<select name="animateon" id="animateon">
-						<option value="1" selected>ON</option>
-						<option value="0">OFF</option>
+						<option value="1" selected>On</option>
+						<option value="0">Off</option>
 					</select>
+					<label for="batterydisplay">Battery Display</label>
+					<select name="batterydisplay" id="batterydisplay">
+						<option value="0" selected>Emoji</option>
+						<option value="1">Number</option>
+					</select>					
 					<label for="feeling">I'm Feeling</label>
 					<select name="feeling" id="feeling">
 						<option value="0" selected>Happy</option>
@@ -299,6 +304,7 @@ if (console && console.log && console.log.call) {
 			'rawon' : $("#rawon option:selected").val(),
 			'urawon' : $("#urawon option:selected").val(),
 			'animateon' : $("#animateon option:selected").val(),
+			'batterydisplay' : $("#batterydisplay option:selected").val(),
 			'feeling' : $("#feeling option:selected").val(),
 			'mycolors' : $("#mycolors option:selected").val(),
 			'timeformat' :	$('input[name=TimeRadio]:checked').val(),
@@ -345,6 +351,7 @@ if (console && console.log && console.log.call) {
 		$("#rawon").val('1').selectmenu("refresh");
 		$("#urawon").val('1').selectmenu("refresh");
 		$("#animateon").val('1').selectmenu("refresh");
+		$("#batterydisplay").val('0').selectmenu("refresh");	
 		$("#feeling").val('0').selectmenu("refresh");
 		$("#mycolors").val('0').selectmenu("refresh");
 	  }
@@ -387,6 +394,7 @@ if (console && console.log && console.log.call) {
 			$("#rawon").val(opts.rawon).selectmenu("refresh");
 			$("#urawon").val(opts.urawon).selectmenu("refresh");
 			$("#animateon").val(opts.animateon).selectmenu("refresh");
+			$("#batterydisplay").val(opts.batterydisplay).selectmenu("refresh");			
 			$("#feeling").val(opts.feeling).selectmenu("refresh");
 			$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 
