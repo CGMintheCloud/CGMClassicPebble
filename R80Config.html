@@ -211,6 +211,11 @@ function clearFunction() {
 						<option value="1" selected>On</option>
 						<option value="0">Off</option>
 					</select>
+					<label for="mainfont">Select Main Font</label>
+					<select name="mainfont" id="mainfont">
+						<option value="0" selected>Digital</option>
+						<option value="1">Classic</option>
+					</select>	
 					<label for="batterydisplay">Select Battery Display Type</label>
 					<select name="batterydisplay" id="batterydisplay">
 						<option value="0" selected>Emoji</option>
@@ -234,7 +239,7 @@ function clearFunction() {
 					</select>
 					<label for="mycolors">Color My Life</label>
 					<select name="mycolors" id="mycolors">
-						<option value="0" selected>Standard</option>
+						<option value="0" selected>Zebra</option>
 						<option value="1">Sunshine</option>
 						<option value="2">Ocean</option>
 						<option value="3">Mahogany</option>
@@ -304,6 +309,7 @@ if (console && console.log && console.log.call) {
 			'rawon' : $("#rawon option:selected").val(),
 			'urawon' : $("#urawon option:selected").val(),
 			'animateon' : $("#animateon option:selected").val(),
+			'mainfont' : $("#mainfont option:selected").val(),
 			'batterydisplay' : $("#batterydisplay option:selected").val(),
 			'feeling' : $("#feeling option:selected").val(),
 			'mycolors' : $("#mycolors option:selected").val(),
@@ -351,6 +357,7 @@ if (console && console.log && console.log.call) {
 		$("#rawon").val('1').selectmenu("refresh");
 		$("#urawon").val('1').selectmenu("refresh");
 		$("#animateon").val('1').selectmenu("refresh");
+		$("#mainfont").val('0').selectmenu("refresh");
 		$("#batterydisplay").val('0').selectmenu("refresh");	
 		$("#feeling").val('0').selectmenu("refresh");
 		$("#mycolors").val('0').selectmenu("refresh");
@@ -394,6 +401,7 @@ if (console && console.log && console.log.call) {
 			$("#rawon").val(opts.rawon).selectmenu("refresh");
 			$("#urawon").val(opts.urawon).selectmenu("refresh");
 			$("#animateon").val(opts.animateon).selectmenu("refresh");
+			$("#mainfont").val(opts.mainfont).selectmenu("refresh");
 			$("#batterydisplay").val(opts.batterydisplay).selectmenu("refresh");			
 			$("#feeling").val(opts.feeling).selectmenu("refresh");
 			$("#mycolors").val(opts.mycolors).selectmenu("refresh");
