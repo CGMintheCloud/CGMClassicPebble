@@ -70,9 +70,9 @@
 				<div data-role="content">
 					<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
 						<legend><strong>Choose mg/dl or mmol:</strong></legend>
-						<input name="tipo_cadastro" type="radio" id="mgdl_form"" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
+						<input name="units" type="radio" id="mgdl_form" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
 						<label for="mgdl_form">mg/dl</label>
-						<input type="radio" name="tipo_cadastro" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
+						<input type="radio" name="units" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
 						<label for="mmol_form">mmol</label>
 					</fieldset>
 					<script>
@@ -287,7 +287,7 @@
 					var u_name = null;
 					var p_w = null;
 					var endpoint = null;
-					if ($('input[name=tipo_cadastro]:checked').val() == 'mgdl_form'){
+					if ($('input[name=units]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
 						highbg = 'mghighbg';
 					} else {
@@ -314,7 +314,7 @@
 						'accountName': u_name,
 						'password': p_w,
 						't1name' : $("#t1name").val(),
-						'radio' : $('input[name=tipo_cadastro]:checked').val(),
+						'radio' : $('input[name=units]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
 						'highbg' : $("#" + highbg + " option:selected").val(),
 						'lowsnooze' : $("#lowsnooze option:selected").val(),
