@@ -56,7 +56,7 @@
 							}
 						</script>
 						<label for="endpoint">
-							<strong>Enter Data Endpoint:
+							<strong>Enter Nightscout Website:
 							</strong>
 						</label>
 						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
@@ -69,7 +69,7 @@
 				
 				<div data-role="content">
 					<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
-						<legend><strong>Choose mg/dl or mmol:</strong></legend>
+						<legend><strong>Choose Units:</strong></legend>
 						<input name="units" type="radio" id="mgdl_form" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
 						<label for="mgdl_form">mg/dl</label>
 						<input type="radio" name="units" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
