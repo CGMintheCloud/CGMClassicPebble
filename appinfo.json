@@ -1,0 +1,161 @@
+{
+    "appKeys": {
+        "bg": 1,
+        "clrw": 8,
+        "dlta": 4,
+        "icon": 0,
+        "name": 6,
+        "noiz": 10,
+        "rwuf": 9,
+        "tapp": 3,
+        "tcgm": 2,
+        "ubat": 5,
+        "vals": 7
+    },
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "Dexterity",
+    "enableMultiJS": false,
+    "longName": "CGM In The Cloud",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/blackdrop.png",
+                "name": "IMAGE_BLACK_DROP",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/hourglass.png",
+                "name": "IMAGE_HOURGLASS",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/reddrop.png",
+                "name": "IMAGE_RED_DROP",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/brokenantenna.png",
+                "name": "IMAGE_BROKEN_ANTENNA",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/questionmarks.png",
+                "name": "IMAGE_QUESTION_MARKS",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/HI.png",
+                "name": "IMAGE_HI",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/LO.png",
+                "name": "IMAGE_LO",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/upup.png",
+                "name": "IMAGE_UPUP",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/up45.png",
+                "name": "IMAGE_UP45",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/up.png",
+                "name": "IMAGE_UP",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/specvaluenone.png",
+                "name": "IMAGE_SPECVALUE_NONE",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/rcvron.png",
+                "name": "IMAGE_RCVRON",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/rcvroff.png",
+                "name": "IMAGE_RCVROFF",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/rcvrnone.png",
+                "name": "IMAGE_RCVRNONE",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/menuicon.png",
+                "menuIcon": true,
+                "name": "IMAGE_MENU_ICON",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/logo.png",
+                "name": "IMAGE_LOGO",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/flat.png",
+                "name": "IMAGE_FLAT",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/downdown.png",
+                "name": "IMAGE_DOWNDOWN",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/down45.png",
+                "name": "IMAGE_DOWN45",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/down.png",
+                "name": "IMAGE_DOWN",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/club55.png",
+                "name": "IMAGE_CLUB55",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/club100.png",
+                "name": "IMAGE_CLUB100",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "CGM",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "0629aaee-0eb8-4036-b1d3-20ac845b4922",
+    "versionLabel": "8.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
