@@ -2487,6 +2487,9 @@ static void load_noise() {
       text_layer_set_text(noise_layer, "Lgt\0");
       break;
     case MEDIUM_NOISE:;
+      #ifdef PBL_COLOR
+      text_layer_set_text_color(noise_layer, text_warning_color); 
+      #endif
       text_layer_set_text(noise_layer, "Med\0");
       break;
     case HEAVY_NOISE:;
