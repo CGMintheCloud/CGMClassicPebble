@@ -663,6 +663,12 @@ void handle_watch_battery_cgm(BatteryChargeState watch_charge_state) {
 
   static char watch_battery_text[8] = {0};
   
+  // for testing only
+  //watch_charge_state.charge_percent = 6;
+  //snprintf(watch_battery_text, BATTLEVEL_FORMAT_SIZE, "Pbl %d", watch_charge_state.charge_percent);
+  //text_layer_set_text(watch_battlevel_layer, watch_battery_text);
+  //return;
+  
   text_layer_set_text_color(watch_battlevel_layer, text_default_color);
   
   if (batterydisplay_value == 1) {
@@ -1261,14 +1267,24 @@ static void set_bg_image_layer (uint8_t bg_image_index, bool use_club_images) {
   
   // ARRAY OF BG IMAGE ICONS
   const uint8_t BG_IMAGE_ICONS[] = {
-	  RESOURCE_ID_IMAGE_HI,   //0
-	  RESOURCE_ID_IMAGE_LO     //1
+    #ifdef PBL_PLATFORM_APLITE
+    RESOURCE_ID_IMAGE_HI,       //0
+    RESOURCE_ID_IMAGE_LO        //1
+    #else
+    RESOURCE_ID_IMAGE_HI_RED,   //0
+    RESOURCE_ID_IMAGE_LO_RED    //1
+    #endif
   };
   
   // ARRAY OF ICONS FOR PERFECT BG
   const uint8_t PERFECTBG_ICONS[] = {
-	  RESOURCE_ID_IMAGE_CLUB100,         //0
-	  RESOURCE_ID_IMAGE_CLUB55           //1
+    #ifdef PBL_PLATFORM_APLITE
+    RESOURCE_ID_IMAGE_CLUB100,       //0
+    RESOURCE_ID_IMAGE_CLUB55        //1
+    #else
+    RESOURCE_ID_IMAGE_CLUB100_YELLOW,   //0
+    RESOURCE_ID_IMAGE_CLUB55_YELLOW    //1
+    #endif
   };
   
   if (use_club_images) {
@@ -1668,7 +1684,7 @@ static void load_bg() {
 	  // convert BG value from string to int
 	  
     // FOR TESTING ONLY
-    //strncpy(last_bg, "5", BG_BUFFER_SIZE); 
+    //strncpy(last_bg, "100", BG_BUFFER_SIZE); 
     //strncpy(last_calc_raw1, "22.2", BG_BUFFER_SIZE);
     //strncpy(last_calc_raw2, "22.2", BG_BUFFER_SIZE); 
     //strncpy(last_calc_raw3, "22.2", BG_BUFFER_SIZE); 
@@ -2333,6 +2349,12 @@ static void load_rig_battlevel() {
 	// CODE START
   text_layer_set_text_color(rig_battlevel_layer, text_default_color);
 
+  // for testing only
+  //current_battlevel = 6;
+  //snprintf(formatted_battlevel, BATTLEVEL_FORMAT_SIZE, "Rig %d", current_battlevel);
+  //text_layer_set_text(rig_battlevel_layer, formatted_battlevel);
+  //return;
+  
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD BATTLEVEL, LAST BATTLEVEL: %s", last_battlevel);
   
 	if (strcmp(last_battlevel, " ") == 0) {
