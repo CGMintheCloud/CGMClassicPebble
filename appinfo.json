@@ -22,6 +22,42 @@
     "resources": {
         "media": [
             {
+                "file": "images/club55yellow.png",
+                "name": "IMAGE_CLUB55_YELLOW",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/club100yellow.png",
+                "name": "IMAGE_CLUB100_YELLOW",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/LOred.png",
+                "name": "IMAGE_LO_RED",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            },
+            {
+                "file": "images/HIred.png",
+                "name": "IMAGE_HI_RED",
+                "targetPlatforms": [
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "bitmap"
+            },
+            {
                 "file": "images/blackdrop.png",
                 "name": "IMAGE_BLACK_DROP",
                 "targetPlatforms": null,
