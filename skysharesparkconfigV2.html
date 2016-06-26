@@ -330,9 +330,8 @@
 						'highvibe' : $("#highvibe option:selected").val(),
 						'vibepattern' : $("#vibepattern option:selected").val(),
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
+                        'mycolors' : $("#mycolors option:selected").val(),
 						'rawvibrate' : $("#rawvibrate option:selected").val()
-						'mycolors' : $("#mycolors option:selected").val(),
-
 					}
 					try {
 						if (window.localStorage && window.localStorage.setItem) {
@@ -388,10 +387,9 @@
 					$("#highvibe").val('3').selectmenu("refresh");
 					$("#vibepattern").val('2').selectmenu("refresh");
 					$("#rawvibrate").val('1').selectmenu("refresh");
+                    $("#mycolors").val('0').selectmenu("refresh");
 					$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 					$("input[value='24']").attr("checked",false).checkboxradio("refresh");
-					$("#mycolors").val('0').selectmenu("refresh");
-
 				}
 			
 				function getOptions() {
@@ -424,8 +422,7 @@
 							
 						}
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
-						// $("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-						// $("#password").val(opts && opts.password ? opts.password : '');
+						
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
 						if (opts.radio == 'mgdl_form'){
 							$("input[value='" + opts.radio + "']").attr("checked",true).checkboxradio("refresh");
@@ -477,7 +474,6 @@
 					}
 					$('#status').text('ready');
 					$('#status').text('setting up events');
-					//localStorage.clear();
 	
 					$("#b-cancel").click(function() {
 						console.log("Cancel");
@@ -487,22 +483,14 @@
 					
 					$("#b-submit").click(function() {
 						console.log("Submit");
-						//var return_to = getQueryParam('return_to', 'pebblejs://close#');
-						//var location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
-						//  console.log("Warping to: " + location);
-						//document.location = location;
+						
 						var return_to = getQueryParam('return_to', 'pebblejs://close#');
 						document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
 						
 						
-						//	location.href = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions));
 						$('#status').text('submitting');
 						
-						//  var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
-						//   console.log("Warping to: " + location);
-						//    $('#status').text('closing');
-						//    document.location = location;
-						// console.log('saved', window.localStorage.cgmOpts);
+				
 					});
 					
 					$("#b-default").click(function() {
