@@ -4,7 +4,7 @@
 	<head>
 		<title>Pebble Settings</title> 
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1"> c
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
 		<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
@@ -231,7 +231,14 @@
 							<option value="1">Yes</option>
 							<option value="0">No</option>
 						</select>
-					
+					       <label for="mycolors">Colour Palette</label>
+					<select name="mycolors" id="mycolors">
+						<option value="0">Blues</option>
+						<option value="1">Purples</option>
+						<option value="2">Black & White</option>
+						<option value="3">Greens</option>
+						<option value="4">Multi</option>
+					</select>
 						<p>
 						<div data-role="fieldcontain">
 							<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
@@ -324,6 +331,8 @@
 						'vibepattern' : $("#vibepattern option:selected").val(),
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
 						'rawvibrate' : $("#rawvibrate option:selected").val()
+						'mycolors' : $("#mycolors option:selected").val(),
+
 					}
 					try {
 						if (window.localStorage && window.localStorage.setItem) {
@@ -381,6 +390,8 @@
 					$("#rawvibrate").val('1').selectmenu("refresh");
 					$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 					$("input[value='24']").attr("checked",false).checkboxradio("refresh");
+					$("#mycolors").val('0').selectmenu("refresh");
+
 				}
 			
 				function getOptions() {
@@ -436,6 +447,7 @@
 						$("#highvibe").val(opts.highvibe).selectmenu("refresh");
 						$("#vibepattern").val(opts.vibepattern).selectmenu("refresh");
 						$("#rawvibrate").val(opts.rawvibrate).selectmenu("refresh");
+						$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 						$("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
 					} else {
 						console.log("no data");
