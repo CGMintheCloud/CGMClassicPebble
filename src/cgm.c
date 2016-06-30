@@ -1,4 +1,8 @@
-#include "pebble.h"
+
+uint16_t LOW_BG_MMOL = 44;
+
+uint16_t HIGH_BG_MMOL = 100;
+uint16_t MIDHIGH_BG_MMOL = 133;#include "pebble.h"
 #include "stddef.h"
 #include "string.h"
   
@@ -57,9 +61,10 @@ AppSync sync_cgm;
 uint8_t AppSyncErrAlert = 100;
 
 // CGM message is 135 bytes
-// Dictionary calculation 1 + 11x7 (11 tuplets, header) + 89 bytes (data) = 167 bytes; pad with 33 bytes
+// Dictionary calculation 1 + 11x7 (11 tuplets, header) + 89 bytes (data) = 167 bytes; pad with 65 bytes
 // See dict_calc_buffer_size()
-static uint8_t sync_buffer_cgm[200];
+// sync_buffer_cgm must be smaller than dictionary buffer
+static uint8_t sync_buffer_cgm[232];
 
 // variables for timers and time
 AppTimer *timer_cgm = NULL;
@@ -76,11 +81,11 @@ char current_icon[2] = {0};
 char last_bg[6] = {0};
 char last_battlevel[4] = {0};
 
-uint32_t current_cgm_time = 0;
-uint32_t stored_cgm_time = 0;
-uint32_t current_cgm_timeago = 0;
+static uint32_t current_cgm_time = 0;
+static uint32_t stored_cgm_time = 0;
+static uint32_t current_cgm_timeago = 0;
 uint8_t init_loading_cgm_timeago = 111;
-char cgm_label_buffer[6] = {0};
+static char cgm_label_buffer[6] = {0};
 
 // global variable for single state machine
 // sometimes we have to know we have cleared an outage, but the outage flags
@@ -93,9 +98,9 @@ char current_bg_delta[10] = {0};
 char last_calc_raw[6] = {0};
 char last_raw_unfilt[6] = {0};
 uint8_t current_noise_value = 0;
-char last_calc_raw1[6] = {0};
-char last_calc_raw2[6] = {0};
-char last_calc_raw3[6] = {0};
+static char last_calc_raw1[6] = {0};
+static char last_calc_raw2[6] = {0};
+static char last_calc_raw3[6] = {0};
 int current_bg = 0;
 int current_uraw = 0;
 int current_calc_raw = 0;
@@ -107,7 +112,7 @@ int converted_bgDelta = 0;
 char current_values[60] = {0};
 uint8_t HaveCalcRaw = 100;
 uint8_t HaveURaw = 100;
-char current_t1dname[25] ={0};
+static char current_t1dname[25] ={0};
 int batterydisplay_value = 0;
 int feeling_value = 0;
 int color_value = 0;
@@ -157,9 +162,25 @@ static const uint16_t MS_IN_A_SECOND = 1000;
 
 // Constants for string buffers
 // If add month to date, buffer size needs to increase to 12; also need to reformat date_app_text init string
-static const uint8_t TIME_TEXTBUFF_SIZE = 6;
-static const uint8_t LABEL_BUFFER_SIZE = 6;
-static const uint8_t BATTLEVEL_FORMAT_SIZE = 12;
+//static const uint8_t TIME_TEXTBUFF_SIZE = 6;
+//static const uint8_t LABEL_BUFFER_SIZE = 6;
+//static const uint8_t BATTLEVEL_FORMAT_SIZE = 12;
+//static const uint8_t T1DNAME_MSGSTR_SIZE = 25;
+//static const uint8_t ICON_MSGSTR_SIZE = 4;
+//static const uint8_t BG_MSGSTR_SIZE = 6;
+//static const uint8_t BGDELTA_MSGSTR_SIZE = 6;
+//static const uint8_t BATTLEVEL_MSGSTR_SIZE = 4;
+//static const uint8_t VALUE_MSGSTR_SIZE = 60;
+//static const uint8_t CALCRAW_MSGSTR_SIZE = 6;
+//static const uint8_t UNFILTRAW_MSGSTR_SIZE = 6;
+//static const uint8_t T1DNAME_FORMATTED_SIZE = 52;
+//static const uint8_t EMOJI_FORMATTED_SIZE = 16;
+//static const uint8_t DATE_TEXTBUFF_SIZE = 11;
+//static const uint8_t HAPPYMSG_BUFFER_SIZE = 30;
+//static const uint8_t BG_BUFFER_SIZE = 6;
+//static const uint8_t TIMEAGO_BUFFER_SIZE = 10;
+//static const uint8_t BGDELTA_LABEL_SIZE = 14;
+//static const uint8_t BGDELTA_FORMATTED_SIZE = 14;
 
 // global Pebble constant for null value
 static const int pebbleNullValue1 = 537024512;
@@ -198,10 +219,6 @@ uint16_t SHOWLOW_BG_MMOL = 23;
 uint16_t HYPOLOW_BG_MMOL = 30;
 uint16_t BIGLOW_BG_MMOL = 33;
 uint16_t MIDLOW_BG_MMOL = 39;
-uint16_t LOW_BG_MMOL = 44;
-
-uint16_t HIGH_BG_MMOL = 100;
-uint16_t MIDHIGH_BG_MMOL = 133;
 uint16_t BIGHIGH_BG_MMOL = 166;
 uint16_t SHOWHIGH_BG_MMOL = 222;
 
@@ -271,7 +288,7 @@ uint8_t TurnOffStrongVibrations = 100;
 // THIS IS ONLY FOR BAD BLUETOOTH CONNECTIONS
 // TRY EXTENDING THIS TIME TO SEE IF IT WILL HELP SMOOTH CONNECTION
 // CGM DATA RECEIVED EVERY 60 SECONDS, GOING BEYOND THAT MAY RESULT IN MISSED DATA
-static const uint8_t BT_ALERT_WAIT_SECS = 45;
+static const uint8_t BT_ALERT_WAIT_SECS = 59;
 
 // Message Timer & Animate Wait Times, in Seconds
 static const uint8_t WATCH_MSGSEND_SECS = 60;
@@ -283,7 +300,7 @@ static const uint8_t HAPPYMSG_ANIMATE_SECS = 10;
 // This is approximately number of seconds, so if set to 50, timeout is at 50 seconds
 // However, this can vary widely - can be up to 6 seconds .... for 50, timeout can be up to 3 minutes
 // ON NEW SDKS - THIS CAN BE MINUTES - SHOULD NOT BE LONGER THAN 14 NOW.
-static const uint8_t APPSYNCANDMSG_RETRIES_MAX = 9;
+static const uint8_t APPSYNCANDMSG_RETRIES_MAX = 10;
 
 // HTML Request retries, for timeout / busy problems
 // Change to see if there is a temp or long term problem
@@ -309,13 +326,6 @@ enum CgmKey {
 
 // only special value index we have to declare global
 const uint8_t LOGO_SPECVALUE_ICON_INDX = 5;
-
-// ARRAY OF TIMEAGO ICONS
-static const uint8_t TIMEAGO_ICONS[] = {
-	RESOURCE_ID_IMAGE_RCVRNONE,   //0
-	RESOURCE_ID_IMAGE_RCVRON,     //1
-	RESOURCE_ID_IMAGE_RCVROFF     //2
-};
 
 // INDEX FOR ARRAY OF TIMEAGO ICONS
 static const uint8_t RCVRNONE_ICON_INDX = 0;
@@ -394,7 +404,7 @@ int myBGAtoi(char *str) {
 static void null_and_cancel_timer (AppTimer **timer_to_null, bool cancel_timer) {
   
   if (*timer_to_null != NULL) {
-    if (cancel_timer) { app_timer_cancel(*timer_to_null); }
+    if (cancel_timer == true) { app_timer_cancel(*timer_to_null); }
     *timer_to_null = NULL;
   }
   
@@ -487,7 +497,7 @@ static void create_update_bitmap(GBitmap **bmp_image, BitmapLayer *bmp_layer, co
 	//APP_LOG(APP_LOG_LEVEL_INFO, " CREATE UPDATE BITMAP: EXIT CODE");
 } // end create_update_bitmap
 
-void set_message_layer (char *msg_string, char *msg_buffer, bool use_msg_buffer, GColor msg_color) {
+static void set_message_layer (char *msg_string, char *msg_buffer, bool use_msg_buffer, GColor msg_color) {
   
   text_layer_set_text_color(message_layer, msg_color);
   
@@ -496,14 +506,38 @@ void set_message_layer (char *msg_string, char *msg_buffer, bool use_msg_buffer,
   
 } // end set_message_layer
 
-void clear_cgm_timeago () {
+static void set_cgmicon (uint8_t cgm_index) {
+  
+  // ARRAY OF TIMEAGO ICONS
+  const uint8_t TIMEAGO_ICONS_BLACK[] = {
+	  RESOURCE_ID_IMAGE_RCVRNONE_BLACK,   //0
+	  RESOURCE_ID_IMAGE_RCVRON_BLACK,     //1
+	  RESOURCE_ID_IMAGE_RCVROFF_BLACK     //2
+  };
+
+  const uint8_t TIMEAGO_ICONS_WHITE[] = {
+	  RESOURCE_ID_IMAGE_RCVRNONE_WHITE,   //0
+	  RESOURCE_ID_IMAGE_RCVRON_WHITE,     //1
+	  RESOURCE_ID_IMAGE_RCVROFF_WHITE     //2
+  };
+
+  if (gcolor_equal(text_default_color, GColorWhite)) {
+    create_update_bitmap(&cgmicon_bitmap,cgmicon_layer,TIMEAGO_ICONS_WHITE[cgm_index]);
+  }
+  else {
+    create_update_bitmap(&cgmicon_bitmap,cgmicon_layer,TIMEAGO_ICONS_BLACK[cgm_index]);
+  }
+  
+} // set_cgmicon
+
+static void clear_cgm_timeago () {
   
   // erase cgm timeago time
   text_layer_set_text(cgmtime_layer, "");
   init_loading_cgm_timeago = 111;
     
 	// erase cgm icon
-  create_update_bitmap(&cgmicon_bitmap,cgmicon_layer,TIMEAGO_ICONS[RCVRNONE_ICON_INDX]);
+  set_cgmicon(RCVRNONE_ICON_INDX);
   
 } // end clear_cgm_timeago
 
@@ -581,7 +615,10 @@ static void alert_handler_cgm(uint8_t alertValue) {
 	
 } // end alert_handler_cgm
 
+// forward declarations for bluetooth routines
 void BT_timer_callback(void *data);
+static void load_bg_delta();
+static void load_cgmtime();
 
 void handle_bluetooth_cgm(bool bt_connected) {
   //APP_LOG(APP_LOG_LEVEL_INFO, "HANDLE BT: ENTER CODE");
@@ -641,6 +678,10 @@ void handle_bluetooth_cgm(bool bt_connected) {
       // no timer is set, so need to reset timer pop
       BT_timer_pop = 100;
     }
+    // clear NO BLUETOOTH message if still there
+    load_bg_delta();
+    clear_cgm_timeago();
+    load_cgmtime();
   }
   
   //APP_LOG(APP_LOG_LEVEL_INFO, "BluetoothAlert: %i", BluetoothAlert);
@@ -655,96 +696,122 @@ void BT_timer_callback(void *data) {
 	
 	// check bluetooth and call handler
   //handle_bluetooth_cgm(connection_service_peek_pebble_app_connection());
-  handle_bluetooth_cgm(bluetooth_connection_service_peek());
+  bluetooth_connected_cgm = bluetooth_connection_service_peek();
+  handle_bluetooth_cgm(bluetooth_connected_cgm);
 	
 } // end BT_timer_callback
 
-void handle_watch_battery_cgm(BatteryChargeState watch_charge_state) {
-
-  static char watch_battery_text[8] = {0};
+static void load_batt_display (TextLayer **load_batt_layer, char *load_batt_label, uint8_t load_batt_level, bool load_watch, bool chg_state,
+                               uint8_t max_tier, uint8_t happy_tier, uint8_t straight_tier, uint8_t sad_tier, uint8_t tired_tier) {
+  // CONSTANTS
+  //static const uint8_t WCHDISP_FORMAT_SIZE = 16;
+  //static const uint8_t RIGDISP_FORMAT_SIZE = 16;
   
-  // for testing only
-  //watch_charge_state.charge_percent = 6;
-  //snprintf(watch_battery_text, BATTLEVEL_FORMAT_SIZE, "Pbl %d", watch_charge_state.charge_percent);
-  //text_layer_set_text(watch_battlevel_layer, watch_battery_text);
-  //return;
+  // VARIABLES
+  static char formatted_watch_batt[14] = {0};
+  static char formatted_rig_batt[14] = {0};
+  static char formatted_batt[10] = {0};
   
-  text_layer_set_text_color(watch_battlevel_layer, text_default_color);
+  //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD EMOJI BATTLEVEL, FUNCTION START, LABEL: %s", load_battlevel_label);
+  //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD EMOJI BATTLEVEL, FUNCTION START, FORMATTED: %s", formatted_emoji_level);
   
   if (batterydisplay_value == 1) {
   // want number display
     
-    if (watch_charge_state.charge_percent == 100) {
-      text_layer_set_text(watch_battlevel_layer, "Pbl GO!\0");
-    } 
-    else if (watch_charge_state.is_charging) {
-      text_layer_set_text(watch_battlevel_layer, "Pbl CH!\0");
+    if ((load_watch == true) && (chg_state == true)) {
+      snprintf(formatted_batt, 12, "%s %s", (char *)load_batt_label, "CH!");
       #ifdef PBL_COLOR
-      text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
+      text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
       #endif
     } 
-    else if ((watch_charge_state.charge_percent > 0) && (watch_charge_state.charge_percent <= 100)) {
-      snprintf(watch_battery_text, BATTLEVEL_FORMAT_SIZE, "Pbl %d", watch_charge_state.charge_percent);
-      text_layer_set_text(watch_battlevel_layer, watch_battery_text);
-      if (watch_charge_state.charge_percent <= 20) {
+    else if (load_batt_level >= max_tier) {
+      snprintf(formatted_batt, 12, "%s %s", (char *)load_batt_label, "GO!");
+    } 
+    else if ((load_batt_level > 0) && (load_batt_level < 100)) {
+      snprintf(formatted_batt, 12, "%s %d", (char *)load_batt_label, load_batt_level); 
+      if (load_batt_level <= 20) {
         #ifdef PBL_COLOR
-        text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
+        text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
         #endif
       }
     }
     else {
-      text_layer_set_text(watch_battlevel_layer, "Pbl \0");
+      // got an out of bounds battery
+      snprintf(formatted_batt, 12, "%s %s", (char *)load_batt_label, "ER!");
       #ifdef PBL_COLOR
-      text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
+      text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
       #endif
-      return;
     }
   }
-  
   else {
   // want emoji display
     
-  // initialize status to thumbs down emoji
-  text_layer_set_text(watch_battlevel_layer, " Pbl \U0001F44E\0");
-  
-  // two hearts emoji, happy to be charing
-  if (watch_charge_state.is_charging) {
-    #ifdef PBL_COLOR
-    text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
-    #endif
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F495");
-  }
-  else if (watch_charge_state.charge_percent == 100) {
+  if ((load_watch == true) && (chg_state == true)) {
+      snprintf(formatted_batt, 12, " %s  %s", (char *)load_batt_label, "\U0001F495"); 
+      #ifdef PBL_COLOR
+      text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
+      #endif
+  } 
+  else if (load_batt_level >= max_tier) {
     // thumbs up emoji
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F44D\0");
+    snprintf(formatted_batt, 12, " %s %s", (char *)load_batt_label, "\U0001F44D"); 
   }
-  else if ( (watch_charge_state.charge_percent > 60) && (watch_charge_state.charge_percent < 100) ) {
+  else if ( (load_batt_level > happy_tier) && (load_batt_level < max_tier) ) {
     // happy face emoji
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F603\0");
+    snprintf(formatted_batt, 12, " %s  %s", (char *)load_batt_label, "\U0001F603"); 
   }
-  else if ( (watch_charge_state.charge_percent > 40) && (watch_charge_state.charge_percent <= 60) ) {
+  else if ( (load_batt_level > straight_tier) && (load_batt_level <= happy_tier) ) {
     // straight line face emoji
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F610\0");
+    snprintf(formatted_batt, 12, " %s  %s", (char *)load_batt_label, "\U0001F610");
   }
-    // sad or tired face emoji
-  else if ( (watch_charge_state.charge_percent > 20) && (watch_charge_state.charge_percent <= 40) ) {
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F625\0");
+  else if ( (load_batt_level > sad_tier) && (load_batt_level <= straight_tier) ) {
+	  // sad face emoji
+    snprintf(formatted_batt, 12, " %s  %s", (char *)load_batt_label, "\U0001F625");
   }  
-   // very tired emoji
-  else if ( (watch_charge_state.charge_percent > 10) && (watch_charge_state.charge_percent <= 20) ) {
-    #ifdef PBL_COLOR
-    text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
+  else if ( (load_batt_level > tired_tier) && (load_batt_level <= sad_tier) ) {
+     // very tired emoji
+	  #ifdef PBL_COLOR
+    text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
     #endif
-    text_layer_set_text(watch_battlevel_layer, " Pbl  \U0001F629\0");
+    snprintf(formatted_batt, 12, " %s  %s", (char *)load_batt_label, "\U0001F629");
   }  
-  else if ( (watch_charge_state.charge_percent > 0) && (watch_charge_state.charge_percent <= 10) ) { 
+  else { 
     // thumbs down emoji
     #ifdef PBL_COLOR
-    text_layer_set_text_color(watch_battlevel_layer, text_urgent_color); 
+    text_layer_set_text_color(*load_batt_layer, text_urgent_color); 
     #endif
-    text_layer_set_text(watch_battlevel_layer, " Pbl \U0001F44E\0");
+    snprintf(formatted_batt, 12, " %s %s", (char *)load_batt_label, "\U0001F44E");
   }
   }
+  //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD EMOJI BATTLEVEL, SET TEXT, LABEL: %s", load_battlevel_label);
+  //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD EMOJI BATTLEVEL, SET TEXT, FORMATTED: %s", formatted_emoji_level);
+  
+  if (load_watch == true) {
+    strncpy(formatted_watch_batt, formatted_batt, 16);
+    text_layer_set_text(*load_batt_layer, formatted_watch_batt);
+  }
+  else {
+    strncpy(formatted_rig_batt, formatted_batt, 16); 
+    text_layer_set_text(*load_batt_layer, formatted_rig_batt);
+  }
+  
+} // load_batt_display
+
+void handle_watch_battery_cgm(BatteryChargeState watch_charge_state) {
+
+  //static char watch_battery_text[8] = {0};
+  
+  // for testing only
+  //watch_charge_state.charge_percent = 6;
+  //snprintf(watch_battery_text, 12, "Pbl %d", watch_charge_state.charge_percent);
+  //text_layer_set_text(watch_battlevel_layer, watch_battery_text);
+  //return;
+  
+  text_layer_set_text_color(watch_battlevel_layer, text_default_color);
+    
+  load_batt_display (&watch_battlevel_layer, "Pbl", watch_charge_state.charge_percent, true, 
+                     watch_charge_state.is_charging, 100, 60, 40, 20, 10);
+					 
 } // end handle_watch_battery_cgm
 
 // format current time from watch
@@ -758,10 +825,10 @@ void handle_minute_tick_cgm(struct tm* tick_time_cgm, TimeUnits units_changed_cg
   if (units_changed_cgm & MINUTE_UNIT) {
     //APP_LOG(APP_LOG_LEVEL_INFO, "TICK TIME MINUTE CODE");
     if (timeformat == 0) {
-      tick_return_cgm = strftime(time_watch_text, TIME_TEXTBUFF_SIZE, "%l:%M", tick_time_cgm);
+      tick_return_cgm = strftime(time_watch_text, 6, "%l:%M", tick_time_cgm);
     } 
     else {
-      tick_return_cgm = strftime(time_watch_text, TIME_TEXTBUFF_SIZE, "%H:%M", tick_time_cgm);
+      tick_return_cgm = strftime(time_watch_text, 6, "%H:%M", tick_time_cgm);
     }
     
 	  if (tick_return_cgm != 0) {
@@ -787,7 +854,14 @@ void handle_minute_tick_cgm(struct tm* tick_time_cgm, TimeUnits units_changed_cg
     // check bluetooth
     
     //handle_bluetooth_cgm(connection_service_peek_pebble_app_connection());
-    handle_bluetooth_cgm(bluetooth_connection_service_peek());
+    //handle_bluetooth_cgm(bluetooth_connection_service_peek());
+    
+    // check bluetooth and only call handler if bluetooth is up
+    bluetooth_connected_cgm = bluetooth_connection_service_peek();
+    if ((bluetooth_connected_cgm == true) && (BluetoothAlert == 111)) {
+      handle_bluetooth_cgm(bluetooth_connected_cgm);
+    }
+    
     
     // check watch battery
     handle_watch_battery_cgm(battery_state_service_peek());
@@ -801,7 +875,7 @@ static void draw_date_from_app() {
   //APP_LOG(APP_LOG_LEVEL_INFO, "DRAW DATE FROM APP: ENTER CODE");
   
   // CONSTANTS
-  const uint8_t DATE_TEXTBUFF_SIZE = 11;
+  //static const uint8_t DATE_TEXTBUFF_SIZE = 11;
   
   // VARIABLES
   time_t d_app = time(NULL);
@@ -815,28 +889,31 @@ static void draw_date_from_app() {
       //APP_LOG(APP_LOG_LEVEL_INFO, "TimeFormat: %d", timeformat);
       if (timeformat == 0) {
       //if (timeformat == 0) {
-        draw_return = strftime(time_watch_text, TIME_TEXTBUFF_SIZE, "%l:%M", current_d_app);
+        draw_return = strftime(time_watch_text, 6, "%l:%M", current_d_app);
       } else {
-        draw_return = strftime(time_watch_text, TIME_TEXTBUFF_SIZE, "%H:%M", current_d_app);
+        draw_return = strftime(time_watch_text, 6, "%H:%M", current_d_app);
       }
   
     //APP_LOG(APP_LOG_LEVEL_INFO, "DRAW DATE FROM APP: FORMATTED TIME");
     
 	  if (draw_return != 0) {
       if (mainfont_value == 1) {
+        text_layer_set_text_color(time_watch_classic_layer, GColorBlack);
         text_layer_set_text(time_watch_classic_layer, time_watch_text); 
         //APP_LOG(APP_LOG_LEVEL_INFO, "DRAW DATE FROM APP: LOADED CLASSIC TIME");
       }
       else { 
+        text_layer_set_text_color(time_watch_digi_layer, GColorBlack);
         text_layer_set_text(time_watch_digi_layer, time_watch_text); 
         //APP_LOG(APP_LOG_LEVEL_INFO, "DRAW DATE FROM APP: LOADED DIGITAL TIME");
       }
       }
 	  }
   
-  draw_return = strftime(date_app_text, DATE_TEXTBUFF_SIZE, "%a %b %e", current_d_app);
-  //draw_return = strftime(date_app_text, DATE_TEXTBUFF_SIZE, " ", current_d_app);
+  draw_return = strftime(date_app_text, 11, "%a %b %e", current_d_app);
+  //draw_return = strftime(date_app_text, 11, " ", current_d_app);
   if (draw_return != 0) {
+    text_layer_set_text_color(date_app_layer, text_default_color);
     text_layer_set_text(date_app_layer, date_app_text);
   }
 
@@ -844,20 +921,44 @@ static void draw_date_from_app() {
   
 } // end draw_date_from_app
 
+static void null_dict_buffer (DictionaryIterator **iter_to_null) {
+  
+  if (*iter_to_null != NULL) {
+    *iter_to_null = NULL;
+  }
+  
+} // null_dict_buffer
+
+static void null_context_buffer (void **context_to_null) {
+  
+  if (*context_to_null != NULL) {
+    *context_to_null = NULL;
+  }
+  
+} // null_context_buffer
+
+static void null_tuple_buffer (const Tuple **tuple_to_null) {
+  
+  if (*tuple_to_null != NULL) {
+    *tuple_to_null = NULL;
+  }
+  
+} // null_tuple_buffer
+
 void sync_error_callback_cgm(DictionaryResult appsync_dict_error, AppMessageResult appsync_error, void *context) {
 
   // VARIABLES
   DictionaryIterator *iter = NULL;
   AppMessageResult appsync_err_openerr = APP_MSG_OK;
   AppMessageResult appsync_err_senderr = APP_MSG_OK;
-
-  bool bluetooth_connected_syncerror = false;
   
   // CODE START
   
-  //bluetooth_connected_syncerror = connection_service_peek_pebble_app_connection();
-  bluetooth_connected_syncerror = bluetooth_connection_service_peek();
-  if (!bluetooth_connected_syncerror) {
+  null_dict_buffer(&iter);
+  
+  //bluetooth_connected_cgm = connection_service_peek_pebble_app_connection();
+  bluetooth_connected_cgm = bluetooth_connection_service_peek();
+  if (bluetooth_connected_cgm == false) {
     // bluetooth is out, BT message already set; return out
     return;
   }
@@ -874,6 +975,7 @@ void sync_error_callback_cgm(DictionaryResult appsync_dict_error, AppMessageResu
             appsync_error, translate_app_error(appsync_error), appsync_dict_error, translate_dict_error(appsync_dict_error), appsyncandmsg_retries_counter);
   
     // try to resend the message; open app message outbox
+    null_dict_buffer(&iter);
     appsync_err_openerr = app_message_outbox_begin(&iter); 
     if (appsync_err_openerr == APP_MSG_OK) {
       // could open app message outbox; send message
@@ -901,8 +1003,8 @@ void sync_error_callback_cgm(DictionaryResult appsync_dict_error, AppMessageResu
  
   // check bluetooth again
   //bluetooth_connected_syncerror = connection_service_peek_pebble_app_connection();
-  bluetooth_connected_syncerror = bluetooth_connection_service_peek();  
-  if (bluetooth_connected_syncerror == false) {
+  bluetooth_connected_cgm = bluetooth_connection_service_peek();  
+  if (bluetooth_connected_cgm == false) {
     // bluetooth is out, BT message already set; return out
     return;
   }
@@ -922,6 +1024,10 @@ void sync_error_callback_cgm(DictionaryResult appsync_dict_error, AppMessageResu
     alert_handler_cgm(APPSYNC_ERR_VIBE);
     AppSyncErrAlert = 111;
   } 
+  
+  // NULL out pointers
+  null_dict_buffer(&iter);
+  null_context_buffer(&context);
   
 } // end sync_error_callback_cgm
 
@@ -1142,22 +1248,23 @@ static void load_values(){
   }
    
 } //End load_values
+
 static void load_icon() {
 	//APP_LOG(APP_LOG_LEVEL_INFO, "LOAD ICON ARROW FUNCTION START");
 	
 	// CONSTANTS
 	
 	// ICON ASSIGNMENTS OF ARROW DIRECTIONS
-	const char NO_ARROW[] = "0";
-	const char DOUBLEUP_ARROW[] = "1";
-	const char SINGLEUP_ARROW[] = "2";
-	const char UP45_ARROW[] = "3";
-	const char FLAT_ARROW[] = "4";
-	const char DOWN45_ARROW[] = "5";
-	const char SINGLEDOWN_ARROW[] = "6";
-	const char DOUBLEDOWN_ARROW[] = "7";
-	const char NOTCOMPUTE_ICON[] = "8";
-	const char OUTOFRANGE_ICON[] = "9";
+	static const char NO_ARROW[] = "0";
+	static const char DOUBLEUP_ARROW[] = "1";
+	static const char SINGLEUP_ARROW[] = "2";
+	static const char UP45_ARROW[] = "3";
+	static const char FLAT_ARROW[] = "4";
+	static const char DOWN45_ARROW[] = "5";
+	static const char SINGLEDOWN_ARROW[] = "6";
+	static const char DOUBLEDOWN_ARROW[] = "7";
+	static const char NOTCOMPUTE_ICON[] = "8";
+	static const char OUTOFRANGE_ICON[] = "9";
 	
   
 	// ARRAY OF ARROW ICON IMAGES
@@ -1247,7 +1354,7 @@ static void load_icon() {
       bluetooth_connected_cgm = bluetooth_connection_service_peek();
         
 	    // check to see if we are in the loading screen  
-	    if (!bluetooth_connected_cgm) {
+	    if (bluetooth_connected_cgm == false) {
 	      // Bluetooth is out; in the loading screen so set logo
 	      create_update_bitmap(&icon_bitmap,icon_layer,ARROW_ICONS[LOGO_ARROW_ICON_INDX]);
 	    }
@@ -1268,8 +1375,8 @@ static void set_bg_image_layer (uint8_t bg_image_index, bool use_club_images) {
   // ARRAY OF BG IMAGE ICONS
   const uint8_t BG_IMAGE_ICONS[] = {
     #ifdef PBL_PLATFORM_APLITE
-    RESOURCE_ID_IMAGE_HI,       //0
-    RESOURCE_ID_IMAGE_LO        //1
+    RESOURCE_ID_IMAGE_HI_BLACK,       //0
+    RESOURCE_ID_IMAGE_LO_BLACK        //1
     #else
     RESOURCE_ID_IMAGE_HI_RED,   //0
     RESOURCE_ID_IMAGE_LO_RED    //1
@@ -1279,8 +1386,8 @@ static void set_bg_image_layer (uint8_t bg_image_index, bool use_club_images) {
   // ARRAY OF ICONS FOR PERFECT BG
   const uint8_t PERFECTBG_ICONS[] = {
     #ifdef PBL_PLATFORM_APLITE
-    RESOURCE_ID_IMAGE_CLUB100,       //0
-    RESOURCE_ID_IMAGE_CLUB55        //1
+    RESOURCE_ID_IMAGE_CLUB100_BLACK,       //0
+    RESOURCE_ID_IMAGE_CLUB55_BLACK        //1
     #else
     RESOURCE_ID_IMAGE_CLUB100_YELLOW,   //0
     RESOURCE_ID_IMAGE_CLUB55_YELLOW    //1
@@ -1386,9 +1493,9 @@ void happymsg_animation_stopped(Animation *animation, bool finished, void *data)
 void animate_happymsg(char *happymsg_to_display) {
 
   // CONSTANTS
-  const uint8_t HAPPYMSG_BUFFER_SIZE = 30;
+  //static const uint8_t HAPPYMSG_BUFFER_SIZE = 30;
   
-	// VARIABLES 
+	// VARIABLES
   Layer *animate_happymsg_layer = NULL;
   
 	// for animation
@@ -1400,8 +1507,9 @@ void animate_happymsg(char *happymsg_to_display) {
 	// CODE START
     
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "ANIMATE HAPPY MSG, STRING PASSED: %s", happymsg_to_display);
-    strncpy(animate_happymsg_buffer, happymsg_to_display, HAPPYMSG_BUFFER_SIZE);
+    strncpy(animate_happymsg_buffer, happymsg_to_display, 30);
 	  text_layer_set_text(happymsg_layer, animate_happymsg_buffer);
+    text_layer_set_text_color(happymsg_layer, text_default_color);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "ANIMATE HAPPY MSG, MSG IN BUFFER: %s", animate_happymsg_buffer);
     animate_happymsg_layer = text_layer_get_layer(happymsg_layer);
 	  from_happymsg_rect = GRect(144, 119, 144, 55);
@@ -1444,8 +1552,8 @@ void bg_vibrator (uint16_t BG_BOTTOM_INDX, uint16_t BG_TOP_INDX, uint8_t BG_SNOO
       conv_vibrator_bg = current_bg;
   
       // adjust high bg for comparison, if needed
-      if ( ((currentBG_isMMOL == 111) && (current_bg >= HIGH_BG_MGDL))
-        || ((currentBG_isMMOL == 100) && (current_bg >= HIGH_BG_MMOL)) ) {
+      if ( ((currentBG_isMMOL == 111) && (current_bg >= HIGH_BG_MMOL))
+        || ((currentBG_isMMOL == 100) && (current_bg >= HIGH_BG_MGDL)) ) {
         conv_vibrator_bg = current_bg + 1;
       }
   
@@ -1487,21 +1595,21 @@ void bg_vibrator (uint16_t BG_BOTTOM_INDX, uint16_t BG_TOP_INDX, uint8_t BG_SNOO
 
 } // end bg_vibrator	  
 
-void set_special_value (uint8_t specvalue_icon_index, char *bg_layer_string, uint8_t specvalue_alert_setting) {
+static void set_special_value (uint8_t specvalue_icon_index, char *bg_layer_string, uint8_t specvalue_alert_setting) {
   
   // ARRAY OF SPECIAL VALUE ICONS
-static const uint8_t SPECIAL_VALUE_ICONS[] = {
-	RESOURCE_ID_IMAGE_SPECVALUE_NONE,   //0
-	RESOURCE_ID_IMAGE_BROKEN_ANTENNA,   //1
-  #ifdef PBL_PLATFORM_APLITE
-  RESOURCE_ID_IMAGE_BLACK_DROP,       //2
-  #else
-  RESOURCE_ID_IMAGE_RED_DROP,         //2
-  #endif
-	RESOURCE_ID_IMAGE_HOURGLASS,        //3
-	RESOURCE_ID_IMAGE_QUESTION_MARKS,   //4
-	RESOURCE_ID_IMAGE_LOGO              //5
-};
+  const uint8_t SPECIAL_VALUE_ICONS[] = {
+	  RESOURCE_ID_IMAGE_SPECVALUE_NONE,   //0
+	  RESOURCE_ID_IMAGE_BROKEN_ANTENNA,   //1
+    #ifdef PBL_PLATFORM_APLITE
+    RESOURCE_ID_IMAGE_DROP_BLACK,       //2
+    #else
+    RESOURCE_ID_IMAGE_DROP_RED,         //2
+    #endif
+	  RESOURCE_ID_IMAGE_HOURGLASS,        //3
+	  RESOURCE_ID_IMAGE_QUESTION_MARKS,   //4
+	  RESOURCE_ID_IMAGE_LOGO              //5
+  };
   
   text_layer_set_text(bg_layer, (char *)bg_layer_string);
 	create_update_bitmap(&specialvalue_bitmap,icon_layer, SPECIAL_VALUE_ICONS[specvalue_icon_index]);
@@ -1514,10 +1622,10 @@ static void set_calculated_raw_layer (TextLayer **calcraw_classic_layer, TextLay
   
   // set default text color
       if (mainfont_value == 1) { 
-        text_layer_set_text_color(*calcraw_classic_layer, text_default_color); 
+        text_layer_set_text_color(*calcraw_classic_layer, GColorBlack); 
       }
       else { 
-        text_layer_set_text_color(*calcraw_digi_layer, text_default_color); 
+        text_layer_set_text_color(*calcraw_digi_layer, GColorBlack); 
       }
       
       // set bg field accordingly for calculated raw layer
@@ -1539,7 +1647,7 @@ static void load_bg() {
   //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BG, FUNCTION START");
 	
 	// CONSTANTS
-  const uint8_t BG_BUFFER_SIZE = 6;
+  //static const uint8_t BG_BUFFER_SIZE = 6;
   
 	// ARRAY OF BG CONSTANTS; MGDL
 	uint16_t BG_MGDL[] = {
@@ -1659,16 +1767,17 @@ static void load_bg() {
   // happy message; max message 24 characters
   // DO NOT GO OVER 24 CHARACTERS, INCLUDING SPACES OR YOU WILL CRASH
   // YOU HAVE BEEN WARNED
-	char happymsg_buffer66[26] = "BEAM MY BG UP SCOTTY!\0";
-  char happymsg_buffer87[26] = "YOU'VE BEEN RICKROLLED\0";
-  char happymsg_buffer100[26] = "WHO YA GONNA CALL?!?\0";
-  char happymsg_buffer110[26] = "YOU ARE MY SUPERHERO!\0";
-  char happymsg_buffer142[26] = "THE ANSWER TO*LIFE?\0";
-  char happymsg_buffer248[26] = "BEE-DO! BEE-DO! BEE-DO!\0";
-  char happymsg_buffer303[26] = "JUST KEEP SWIMMING\0";
+	static char happymsg_buffer66[26] = "BEAM MY BG UP SCOTTY!\0";
+  static char happymsg_buffer87[26] = "YOU'VE BEEN RICKROLLED\0";
+  static char happymsg_buffer100[26] = "WHO YA GONNA CALL?!?\0";
+  static char happymsg_buffer104[26] = "BABY YOU'RE A FIREWORK!\0";
+  static char happymsg_buffer110[26] = "YOU ARE MY SUPERHERO!\0";
+  static char happymsg_buffer142[26] = "THE ANSWER TO*LIFE?\0";
+  static char happymsg_buffer248[26] = "BEE-DO! BEE-DO! BEE-DO!\0";
+  static char happymsg_buffer303[26] = "JUST KEEP SWIMMING\0";
     
 	// CODE START
-  text_layer_set_text_color(bg_layer, text_default_color);
+  text_layer_set_text_color(bg_layer, GColorBlack);
   layer_set_hidden(text_layer_get_layer(bg_layer), false);
   layer_set_hidden(bitmap_layer_get_layer(bg_image_layer), true);
   
@@ -1684,16 +1793,16 @@ static void load_bg() {
 	  // convert BG value from string to int
 	  
     // FOR TESTING ONLY
-    //strncpy(last_bg, "100", BG_BUFFER_SIZE); 
-    //strncpy(last_calc_raw1, "22.2", BG_BUFFER_SIZE);
-    //strncpy(last_calc_raw2, "22.2", BG_BUFFER_SIZE); 
-    //strncpy(last_calc_raw3, "22.2", BG_BUFFER_SIZE); 
-    //strncpy(last_raw_unfilt, "266", BG_BUFFER_SIZE); 
+    //strncpy(last_bg, "5", 6); 
+    //strncpy(last_calc_raw1, "22.2", 6);
+    //strncpy(last_calc_raw2, "22.2", 6); 
+    //strncpy(last_calc_raw3, "22.2", 6); 
+    //strncpy(last_raw_unfilt, "266", 6); 
   
 	  // FOR TESTING ONLY, ANIMATIONS AND TRANSITIONS
-    //if (current_bg == 87) { strncpy(last_bg, "89", BG_BUFFER_SIZE); }
-    //else if (current_bg == 89) { strncpy(last_bg, "88", BG_BUFFER_SIZE); }
-    //else { strncpy(last_bg, "87", BG_BUFFER_SIZE); }
+    //if (current_bg == 87) { strncpy(last_bg, "89", 6); }
+    //else if (current_bg == 89) { strncpy(last_bg, "88", 6); }
+    //else { strncpy(last_bg, "87", 6); }
 	
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD BG, BGATOI IN, CURRENT_BG: %d LAST_BG: %s ", current_bg, last_bg);
     current_bg = myBGAtoi(last_bg);
@@ -1721,7 +1830,7 @@ static void load_bg() {
       //bluetooth_connected_cgm = connection_service_peek_pebble_app_connection();
       bluetooth_connected_cgm = bluetooth_connection_service_peek();
      
-      if (!bluetooth_connected_cgm) {
+      if (bluetooth_connected_cgm == false) {
 	      // Bluetooth is out; set BT message
 		    //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BG, BG INIT: NO BT, SET NO BT MESSAGE");
           set_message_layer("NO BLUETOOTH\0", "", false, text_urgent_color);
@@ -1803,6 +1912,7 @@ static void load_bg() {
         set_happymsg_animation(100, 55, true, happymsg_buffer100);
         set_happymsg_animation(66, 36, true, happymsg_buffer66);
         set_happymsg_animation(87, 87, true, happymsg_buffer87);
+        set_happymsg_animation(104, 54, false, happymsg_buffer104);
         set_happymsg_animation(110, 60, true, happymsg_buffer110);
         set_happymsg_animation(142, 42, true, happymsg_buffer142);
         set_happymsg_animation(248, 148, true, happymsg_buffer248);
@@ -1874,9 +1984,9 @@ static void load_bg() {
         
         // use calculated raw values in BG field; if different cascade down so we have last three values
         if (current_calc_raw != current_calc_raw1) {
-            strncpy(last_calc_raw3, last_calc_raw2, BG_BUFFER_SIZE);
-            strncpy(last_calc_raw2, last_calc_raw1, BG_BUFFER_SIZE);
-            strncpy(last_calc_raw1, last_calc_raw, BG_BUFFER_SIZE);
+            strncpy(last_calc_raw3, last_calc_raw2, 6);
+            strncpy(last_calc_raw2, last_calc_raw1, 6);
+            strncpy(last_calc_raw1, last_calc_raw, 6);
             current_calc_raw3 = current_calc_raw2;
             current_calc_raw2 = current_calc_raw1;
             current_calc_raw1 = current_calc_raw;
@@ -1885,9 +1995,9 @@ static void load_bg() {
       
       else {
         // if not in special values or don't have calculated raw, blank out the fields
-        strncpy(last_calc_raw1, " ", BG_BUFFER_SIZE);
-        strncpy(last_calc_raw2, " ", BG_BUFFER_SIZE);
-        strncpy(last_calc_raw3, " ", BG_BUFFER_SIZE);
+        strncpy(last_calc_raw1, " ", 6);
+        strncpy(last_calc_raw2, " ", 6);
+        strncpy(last_calc_raw3, " ", 6);
       }
       
       // set calculated raw layers, default text and number
@@ -1967,24 +2077,6 @@ static void load_bg() {
 	
 } // end load_bg
 
-static void set_cgm_timeago (char *timeago_string, int timeago_diff, bool use_timeago_string, char *timeago_label) {
-  
-  // CONSTANTS
-  const uint8_t TIMEAGO_BUFFER_SIZE = 10;
-  
-  // VARIABLES
-  static char formatted_cgm_timeago[10] = {0};
-  
-  if (use_timeago_string) { text_layer_set_text(cgmtime_layer, (char *)timeago_string); }
-  else { 
-    snprintf(formatted_cgm_timeago, TIMEAGO_BUFFER_SIZE, "%i", timeago_diff);
-    strncpy(cgm_label_buffer, timeago_label, LABEL_BUFFER_SIZE);
-    strcat(formatted_cgm_timeago, cgm_label_buffer);
-    text_layer_set_text(cgmtime_layer, formatted_cgm_timeago);
-  }
-  
-} // end set_cgm_timeago
-
 static void load_cgmtime() {
     //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD CGMTIME FUNCTION START");
 	
@@ -1995,13 +2087,16 @@ static void load_cgmtime() {
   
     // VARIABLES
     
-    static uint32_t cgm_time_offset = 0;
+    uint32_t cgm_time_offset = 0;
     int cgm_timeago_diff = 0;
 
     time_t current_temp_time = time(NULL);
     struct tm *current_local_time = localtime(&current_temp_time);
     size_t draw_cgm_time = 0;
     static char cgm_time_text[] = "00:00";
+  
+    static char formatted_cgm_timeago[8] = {0};
+    bool wait_minutes = false;
     
     // CODE START
 	
@@ -2024,7 +2119,7 @@ static void load_cgmtime() {
         //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD CGMTIME, INIT CGM TIMEAGO SHOW LAST TIME");
         current_temp_time = current_cgm_time;
         current_local_time = localtime(&current_temp_time);
-        draw_cgm_time = strftime(cgm_time_text, TIME_TEXTBUFF_SIZE, "%l:%M", current_local_time);
+        draw_cgm_time = strftime(cgm_time_text, 6, "%l:%M", current_local_time);
         if (draw_cgm_time != 0) {
           text_layer_set_text(cgmtime_layer, cgm_time_text);
         }
@@ -2060,7 +2155,7 @@ static void load_cgmtime() {
       
 	    // if not in initial cgm timeago, set rcvr on icon and time label
       if ((init_loading_cgm_timeago == 100) && (BluetoothAlert == 100) && (PhoneOffAlert == 100)) {
-        create_update_bitmap(&cgmicon_bitmap,cgmicon_layer,TIMEAGO_ICONS[RCVRON_ICON_INDX]);
+        set_cgmicon(RCVRON_ICON_INDX);
       
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD CGMTIME, CURRENT CGM TIME: %lu", current_cgm_time);
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD CGMTIME, STORED CGM TIME: %lu", stored_cgm_time);
@@ -2070,34 +2165,39 @@ static void load_cgmtime() {
       
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD CGMTIME, GM TIME AGO LABEL IN: %s", cgm_label_buffer);
       
+        wait_minutes = false;
         if (current_cgm_timeago < MINUTEAGO) {
           cgm_timeago_diff = 0;
-          set_cgm_timeago("now", cgm_timeago_diff, true, "");
+          strncpy (formatted_cgm_timeago, "now", 6);
           // We've cleared Check Rig, so make sure reset flag is set.
           CGMOffAlert = 100;
         }
         else if (current_cgm_timeago < HOURAGO) {
           cgm_timeago_diff = (current_cgm_timeago / MINUTEAGO);
-          set_cgm_timeago("", cgm_timeago_diff, false, "m");
+          snprintf(formatted_cgm_timeago, 6, "%i%s", cgm_timeago_diff, "m");
+          wait_minutes = true;
         }
         else if (current_cgm_timeago < DAYAGO) {
           cgm_timeago_diff = (current_cgm_timeago / HOURAGO);
-          set_cgm_timeago("", cgm_timeago_diff, false, "h");
+          snprintf(formatted_cgm_timeago, 6, "%i%s", cgm_timeago_diff, "h");
         }
         else if (current_cgm_timeago < WEEKAGO) {
           cgm_timeago_diff = (current_cgm_timeago / DAYAGO);
-          set_cgm_timeago("", cgm_timeago_diff, false, "d");
+          snprintf(formatted_cgm_timeago, 6, "%i%s", cgm_timeago_diff, "d");
         }
         else {
           // clear cgm timeago icon and set init flag
           clear_cgm_timeago();
         } 
+        text_layer_set_text(cgmtime_layer, formatted_cgm_timeago);
       }
       
+      
+      
       // check to see if we need to show receiver off icon
-      if ( ((cgm_timeago_diff >= CGMOUT_WAIT_MIN) || ((strcmp(cgm_label_buffer, "") != 0) && (strcmp(cgm_label_buffer, "m") != 0))) 
+      if ( ((cgm_timeago_diff >= CGMOUT_WAIT_MIN) || ((strcmp(cgm_label_buffer, "") != 0) && (wait_minutes == true))) 
       || ( ( ((current_cgm_timeago < TWOYEARSAGO) && ((current_cgm_timeago / MINUTEAGO) >= CGMOUT_INIT_WAIT_MIN)) 
-          || ((strcmp(cgm_label_buffer, "") != 0) && (strcmp(cgm_label_buffer, "m") != 0)) )
+          || ((strcmp(cgm_label_buffer, "") != 0) && (wait_minutes == true)) )
            && (init_loading_cgm_timeago == 111) && (ClearedOutage == 100) && (ClearedBTOutage == 100) ) ) {
 	      // set receiver off icon
 	      //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD CGMTIME, SET RCVR OFF ICON, CGM TIMEAGO DIFF: %d", cgm_timeago_diff);
@@ -2106,8 +2206,8 @@ static void load_cgmtime() {
           #ifdef PBL_COLOR
           text_layer_set_text_color(cgmtime_layer, text_urgent_color); 
           #endif
-	        create_update_bitmap(&cgmicon_bitmap,cgmicon_layer,TIMEAGO_ICONS[RCVROFF_ICON_INDX]);
-        }       
+          set_cgmicon(RCVROFF_ICON_INDX);
+        }
 	      // Vibrate if we need to
 	      if ((BluetoothAlert == 100) && (PhoneOffAlert == 100) && (CGMOffAlert == 100) && 
             (ClearedOutage == 100) && (ClearedBTOutage == 100)) {
@@ -2144,12 +2244,15 @@ static void load_apptime(){
       app_time_now = time(NULL);
       
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD APPTIME, TIME NOW: %lu", app_time_now);
-      
+      //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD APPTIME, CURRENT APP TIME: %lu", current_app_time);
+  
       current_app_timeago = abs(app_time_now - current_app_time);
-      
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD APPTIME, CURRENT APP TIMEAGO: %lu", current_app_timeago);
       
 	  app_timeago_diff = (current_app_timeago / MINUTEAGO);
+  
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD APPTIME, APP TIMEAGO DIFF: %i", app_timeago_diff);
+  
 	  if ( (current_app_timeago < TWOYEARSAGO) && (app_timeago_diff >= PHONEOUT_WAIT_MIN) ) {
               
         // clear cgm timeago icon and set init flag
@@ -2182,18 +2285,18 @@ static void load_apptime(){
 static void set_bg_delta(char *bg_delta_string, char *bg_delta_buffer, bool use_bg_delta_string, char *bg_delta_label) {
   
   // CONSTANTS
-	const uint8_t BGDELTA_LABEL_SIZE = 14;
-	const uint8_t BGDELTA_FORMATTED_SIZE = 14;
+	//static const uint8_t BGDELTA_LABEL_SIZE = 14;
+	//static const uint8_t BGDELTA_FORMATTED_SIZE = 14;
   
   // VARIABLES
-  static char formatted_bg_delta[14] = {0};
+  static char formatted_bg_delta[18] = {0};
   
-  char delta_label_buffer[14] = {0};
+  static char delta_label_buffer[8] = {0};
   
-  if (use_bg_delta_string) { strncpy(formatted_bg_delta, (char *)bg_delta_string, BGDELTA_FORMATTED_SIZE); }
-  else { strncpy(formatted_bg_delta, (char *)bg_delta_buffer, BGDELTA_FORMATTED_SIZE); }
+  if (use_bg_delta_string) { strncpy(formatted_bg_delta, (char *)bg_delta_string, 6); }
+  else { strncpy(formatted_bg_delta, (char *)bg_delta_buffer, 6); }
  
-  strncpy(delta_label_buffer, (char *)bg_delta_label, BGDELTA_LABEL_SIZE);
+  strncpy(delta_label_buffer, (char *)bg_delta_label, 10);
 	strcat(formatted_bg_delta, delta_label_buffer);
   set_message_layer("", formatted_bg_delta, true, text_default_color);
   
@@ -2208,7 +2311,7 @@ static void load_bg_delta() {
   //bluetooth_connected_cgm = connection_service_peek_pebble_app_connection();
   bluetooth_connected_cgm = bluetooth_connection_service_peek();
   
-	if ((!bluetooth_connected_cgm) || (BluetoothAlert == 111)) {
+	if ((bluetooth_connected_cgm == false) || (BluetoothAlert == 111)) {
 	  // Bluetooth is out; BT message already set, so return
 	  return;
 	}
@@ -2276,7 +2379,7 @@ static void load_bg_delta() {
   	// check if LOADING.., if true set message
   	// put " " (space) in bg field so logo continues to show
     if (strcmp(current_bg_delta, "LOAD") == 0) {
-      set_message_layer("LOADING 8.0\0", "", false, text_default_color);
+      set_message_layer("LOADING 8.1\0", "", false, text_default_color);
       set_special_value(LOGO_SPECVALUE_ICON_INDX, " \0", 100);
       return;
     }
@@ -2301,7 +2404,7 @@ static void load_bg_delta() {
 	
 	// zero here, means we have an error instead; set error message
     if (converted_bgDelta == 0) {
-      //strncpy(formatted_bg_delta, "BG DELTA ERR", BGDELTA_FORMATTED_SIZE);
+      //strncpy(formatted_bg_delta, "BG DELTA ERR", 14);
       set_message_layer("BG DELTA ERROR\0", "", false, text_urgent_color);
       return;
     }
@@ -2341,19 +2444,13 @@ static void load_rig_battlevel() {
   //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BATTLEVEL, FUNCTION START");
 	
 	// VARIABLES
-  static char formatted_battlevel[8] = {0};
+  //static char formatted_battlevel[8] = {0};
   static uint8_t LowBatteryAlert = 100;
   
 	uint8_t current_battlevel = 0;
 
 	// CODE START
   text_layer_set_text_color(rig_battlevel_layer, text_default_color);
-
-  // for testing only
-  //current_battlevel = 6;
-  //snprintf(formatted_battlevel, BATTLEVEL_FORMAT_SIZE, "Rig %d", current_battlevel);
-  //text_layer_set_text(rig_battlevel_layer, formatted_battlevel);
-  //return;
   
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD BATTLEVEL, LAST BATTLEVEL: %s", last_battlevel);
   
@@ -2382,6 +2479,9 @@ static void load_rig_battlevel() {
   
 	current_battlevel = atoi(last_battlevel);
   
+  // for testing only
+  //current_battlevel = 6;
+  
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD BATTLEVEL, CURRENT BATTLEVEL: %i", current_battlevel);
   
 	if ((current_battlevel <= 0) || (current_battlevel > 100) || (last_battlevel[0] == '-')) { 
@@ -2395,54 +2495,11 @@ static void load_rig_battlevel() {
 	}
   
   // display battlevel
-  
-  if (batterydisplay_value == 1) {
-  // want number display
-  
-    if ( (current_battlevel >= 99) && (current_battlevel <= 100) ) {
-      text_layer_set_text(rig_battlevel_layer, "Rig GO!\0");
-    } 
-    else {
-      snprintf(formatted_battlevel, BATTLEVEL_FORMAT_SIZE, "Rig %d", current_battlevel);
-      text_layer_set_text(rig_battlevel_layer, formatted_battlevel);
-    }
-  }
-  
-  else {
-  // want emoji display
-    
-  // initialize status to thumbs down emoji
-  text_layer_set_text(rig_battlevel_layer, " Rig \U0001F44E\0");
-    
-  // initialized to thumbs down emoji. set others states as necessary.
-  if ( (current_battlevel >= 99) && (current_battlevel <= 100) ) {
-    // thumbs up emoji
-    text_layer_set_text(rig_battlevel_layer, " Rig \U0001F44D\0");
-  }
-  else if ( (current_battlevel > 60) && (current_battlevel < 99) ) {
-    // happy face emoji
-    text_layer_set_text(rig_battlevel_layer, " Rig  \U0001F603\0");
-  }
-  else if ( (current_battlevel > 40) && (current_battlevel <= 60) ) {
-    // straight line face emoji
-    text_layer_set_text(rig_battlevel_layer, " Rig  \U0001F610\0");
-  }
-    // sad or tired face emoji
-  else if ( (current_battlevel > 20) && (current_battlevel <= 40) ) {
-    text_layer_set_text(rig_battlevel_layer, " Rig  \U0001F625\0");
-  }  
-    // very tired emoji
-  else if ( (current_battlevel > 10) && (current_battlevel <= 20) ) {
-    text_layer_set_text(rig_battlevel_layer, " Rig  \U0001F629\0");
-  }  
-  else if ( (current_battlevel > 0) && (current_battlevel <= 10) ) { 
-    // thumbs down emoji
-    text_layer_set_text(rig_battlevel_layer, " Rig \U0001F44E\0");
-  }
-  }
+  load_batt_display (&rig_battlevel_layer, "Rig", current_battlevel, false, 
+                     false, 99, 60, 40, 20, 10);
     
   // vibrate on battlevel if needed
-	if ( (current_battlevel > 10) && (current_battlevel <= 20) ) {
+	if ( (current_battlevel > 0) && (current_battlevel <= 20) ) {
     #ifdef PBL_COLOR
     text_layer_set_text_color(rig_battlevel_layer, text_urgent_color); 
     #endif
@@ -2452,28 +2509,6 @@ static void load_rig_battlevel() {
 	    LowBatteryAlert = 111;
     }
 	}
-  
-	if ( (current_battlevel > 5) && (current_battlevel <= 10) ) {
-    #ifdef PBL_COLOR
-    text_layer_set_text_color(rig_battlevel_layer, text_urgent_color); 
-    #endif
-    if (LowBatteryAlert == 100) {
-	    //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BATTLEVEL, LOW BATTERY, 10 OR LESS, VIBRATE");
-	    alert_handler_cgm(LOWBATTERY_VIBE);
-	    LowBatteryAlert = 111;
-    }
-  }
-  
-	if ( (current_battlevel > 0) && (current_battlevel <= 5) ) {
-    #ifdef PBL_COLOR
-    text_layer_set_text_color(rig_battlevel_layer, text_urgent_color); 
-    #endif
-    if (LowBatteryAlert == 100) {
-	    //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BATTLEVEL, LOW BATTERY, 5 OR LESS, VIBRATE");
-	    alert_handler_cgm(LOWBATTERY_VIBE);
-	    LowBatteryAlert = 111;
-    }	  
-  }
 	
 	//APP_LOG(APP_LOG_LEVEL_INFO, "LOAD BATTLEVEL, END FUNCTION");
 } // end load_rig_battlevel
@@ -2545,37 +2580,39 @@ static void load_t1dname() {
    //APP_LOG(APP_LOG_LEVEL_INFO, "LOAD T1DNAME, FUNCTION START");
  
   // CONSTANTS
-  const uint8_t T1DNAME_FORMATTED_SIZE = 52;
-  const uint8_t EMOJI_FORMATTED_SIZE = 13;
+  //static const uint8_t T1DNAME_FORMATTED_SIZE = 52;
+  //static const uint8_t EMOJI_FORMATTED_SIZE = 16;
   
   // VARIABLES
   static char formatted_t1dname[52] = {0};
-  char emoji_string[13] = {0};
+  static char emoji_string[14] = {0};
+  
+  text_layer_set_text_color(t1dname_layer, text_default_color);
   
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "LOAD T1DNAME, CURRENT FEELING VALUE: %i ", feeling_value);
   if (HardCodeNoVibrations == 111) {
-    strncpy(emoji_string, " \U0001F634 ", EMOJI_FORMATTED_SIZE);
+    strncpy(emoji_string, " \U0001F634 ", 16);
   }
   else {
   switch (feeling_value) {
-    case 0:; strncpy(emoji_string, " \U0001F603 ", EMOJI_FORMATTED_SIZE); break;
-    case 1:; strncpy(emoji_string, " \U0001F602 ", EMOJI_FORMATTED_SIZE); break;
-    case 2:; strncpy(emoji_string, " \U0001F60B ", EMOJI_FORMATTED_SIZE); break;
-    case 3:; strncpy(emoji_string, " \U0001F60D ", EMOJI_FORMATTED_SIZE); break;
-    case 4:; strncpy(emoji_string, " \U0001F607 ", EMOJI_FORMATTED_SIZE); break;
-    case 5:; strncpy(emoji_string, " \U0001F495 ", EMOJI_FORMATTED_SIZE); break;
-    case 6:; strncpy(emoji_string, " \U0001F64F ", EMOJI_FORMATTED_SIZE); break;
-    case 7:; strncpy(emoji_string, " \U0001F389 ", EMOJI_FORMATTED_SIZE); break;
-    case 8:; strncpy(emoji_string, " \U0001F60E ", EMOJI_FORMATTED_SIZE); break;
-    case 9:; strncpy(emoji_string, " \U0001F425 ", EMOJI_FORMATTED_SIZE); break;
-    case 10:; strncpy(emoji_string, " \U0001F621 ", EMOJI_FORMATTED_SIZE); break;
-    case 11:; strncpy(emoji_string, " \U0001F4A9 ", EMOJI_FORMATTED_SIZE); break;
-    case 12:; strncpy(emoji_string, " \U0001F37B ", EMOJI_FORMATTED_SIZE); break;
-    default:; strncpy(emoji_string, " \U0001F603 ", EMOJI_FORMATTED_SIZE); break;
+    case 0:; strncpy(emoji_string, " \U0001F603 ", 16); break;
+    case 1:; strncpy(emoji_string, " \U0001F602 ", 16); break;
+    case 2:; strncpy(emoji_string, " \U0001F60B ", 16); break;
+    case 3:; strncpy(emoji_string, " \U0001F60D ", 16); break;
+    case 4:; strncpy(emoji_string, " \U0001F607 ", 16); break;
+    case 5:; strncpy(emoji_string, " \U0001F495 ", 16); break;
+    case 6:; strncpy(emoji_string, " \U0001F64F ", 16); break;
+    case 7:; strncpy(emoji_string, " \U0001F389 ", 16); break;
+    case 8:; strncpy(emoji_string, " \U0001F60E ", 16); break;
+    case 9:; strncpy(emoji_string, " \U0001F425 ", 16); break;
+    case 10:; strncpy(emoji_string, " \U0001F621 ", 16); break;
+    case 11:; strncpy(emoji_string, " \U0001F4A9 ", 16); break;
+    case 12:; strncpy(emoji_string, " \U0001F37B ", 16); break;
+    default:; strncpy(emoji_string, " \U0001F603 ", 16); break;
   }
   }
   
-  strncpy(formatted_t1dname, emoji_string, T1DNAME_FORMATTED_SIZE);
+  strncpy(formatted_t1dname, emoji_string, 52);
   strcat(formatted_t1dname, current_t1dname);
   strcat(formatted_t1dname, emoji_string);
   text_layer_set_text(t1dname_layer, formatted_t1dname);
@@ -2706,6 +2743,15 @@ static void load_color() {
       text_warning_color = GColorDarkCandyAppleRed;
       text_urgent_color = GColorDarkCandyAppleRed;
       break;
+    // Holiday
+    case 7:;
+      number_of_colors = 2;
+      top_color = GColorBlue;
+      bottom_color = GColorRed;
+      text_default_color = GColorWhite;
+      text_warning_color = GColorVividCerulean;
+      text_urgent_color = GColorVividCerulean;
+      break;
     }
     #endif
 
@@ -2733,12 +2779,11 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
   uint8_t get_new_cgm_time = 100;
   
 	// CONSTANTS
-	const uint8_t ICON_MSGSTR_SIZE = 4;
-	const uint8_t BG_MSGSTR_SIZE = 6;
-	const uint8_t BGDELTA_MSGSTR_SIZE = 6;
-	const uint8_t BATTLEVEL_MSGSTR_SIZE = 4;
-	const uint8_t VALUE_MSGSTR_SIZE = 60;
-  const uint8_t T1DNAME_MSGSTR_SIZE = 25;
+	//static const uint8_t ICON_MSGSTR_SIZE = 4;
+	//static const uint8_t BG_MSGSTR_SIZE = 6;
+	//static const uint8_t BGDELTA_MSGSTR_SIZE = 6;
+	//static const uint8_t BATTLEVEL_MSGSTR_SIZE = 4;
+	//static const uint8_t VALUE_MSGSTR_SIZE = 60;
 
 	// CODE START
   
@@ -2750,14 +2795,14 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
 
 	case CGM_ICON_KEY:;
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: ICON ARROW");
-      strncpy(current_icon, new_tuple->value->cstring, ICON_MSGSTR_SIZE);
+      strncpy(current_icon, new_tuple->value->cstring, 4);
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "SYNC TUPLE, ICON VALUE: %s ", current_icon);
-	  load_icon();
+	    load_icon();
       break; // break for CGM_ICON_KEY
 
 	case CGM_BG_KEY:;
 	  //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: BG CURRENT");
-      strncpy(last_bg, new_tuple->value->cstring, BG_MSGSTR_SIZE);
+      strncpy(last_bg, new_tuple->value->cstring, 6);
 	  //APP_LOG(APP_LOG_LEVEL_DEBUG, "SYNC TUPLE, BG VALUE: %s ", last_bg);
       load_bg();
       break; // break for CGM_BG_KEY
@@ -2829,27 +2874,27 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
 
 	case CGM_DLTA_KEY:;
    	  //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: BG DELTA");
-	  strncpy(current_bg_delta, new_tuple->value->cstring, BGDELTA_MSGSTR_SIZE);
+	  strncpy(current_bg_delta, new_tuple->value->cstring, 6);
    	  //APP_LOG(APP_LOG_LEVEL_DEBUG, "SYNC TUPLE, BG DELTA VALUE: %s ", current_bg_delta);
 	  load_bg_delta();
 	  break; // break for CGM_DLTA_KEY
 	
 	case CGM_UBAT_KEY:;
    	  //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: UPLOADER BATTERY LEVEL");
-      strncpy(last_battlevel, new_tuple->value->cstring, BATTLEVEL_MSGSTR_SIZE);
+      strncpy(last_battlevel, new_tuple->value->cstring, 4);
    	  //APP_LOG(APP_LOG_LEVEL_DEBUG, "SYNC TUPLE, BATTERY LEVEL VALUE: %s ", last_battlevel);
       load_rig_battlevel();
       break; // break for CGM_UBAT_KEY
 
 	case CGM_NAME_KEY:;
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: T1D NAME");
-      strncpy(current_t1dname, new_tuple->value->cstring, T1DNAME_MSGSTR_SIZE);
+      strncpy(current_t1dname, new_tuple->value->cstring, 25);
       load_t1dname();
       break; // break for CGM_NAME_KEY
     
   case CGM_VALS_KEY:;
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: VALUES");
-      strncpy(current_values, new_tuple->value->cstring, VALUE_MSGSTR_SIZE);
+      strncpy(current_values, new_tuple->value->cstring, 60);
       load_values();
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: LOADED VALUES");
       load_mainfont();
@@ -2860,9 +2905,9 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
     
   case CGM_CLRW_KEY:;
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: CALCULATED RAW");
-      strncpy(last_calc_raw, new_tuple->value->cstring, BG_MSGSTR_SIZE);
+      strncpy(last_calc_raw, new_tuple->value->cstring, 6);
       if ( (strcmp(last_calc_raw, "0") == 0) || (strcmp(last_calc_raw, "0.0") == 0) || (TurnOnCalcRaw == 100) ) {
-        strncpy(last_calc_raw, " ", BG_MSGSTR_SIZE);
+        strncpy(last_calc_raw, " ", 6);
         HaveCalcRaw = 100;
       }
       else { HaveCalcRaw = 111; }  
@@ -2871,9 +2916,9 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
     
  	case CGM_RWUF_KEY:;
       //APP_LOG(APP_LOG_LEVEL_INFO, "SYNC TUPLE: RAW UNFILTERED");
-      strncpy(last_raw_unfilt, new_tuple->value->cstring, BG_MSGSTR_SIZE);
+      strncpy(last_raw_unfilt, new_tuple->value->cstring, 6);
       if ( (strcmp(last_raw_unfilt, "0") == 0) || (strcmp(last_raw_unfilt, "0.0") == 0) || (TurnOnUnfilteredRaw == 100) ) {
-        strncpy(last_raw_unfilt, " ", BG_MSGSTR_SIZE);
+        strncpy(last_raw_unfilt, " ", 6);
       }
       else { HaveURaw = 111; }
       text_layer_set_text(raw_unfilt_layer, last_raw_unfilt);
@@ -2886,7 +2931,13 @@ void sync_tuple_changed_callback_cgm(const uint32_t key, const Tuple* new_tuple,
       load_noise();
       break; // break for CGM_NOIZ_KEY
   }  // end switch(key)
-
+  
+  // null pointers
+  null_tuple_buffer(&new_tuple);
+  null_tuple_buffer(&old_tuple);
+  null_context_buffer(&context);
+  
+  
 } // end sync_tuple_changed_callback_cgm()
 
 static void send_cmd_cgm(void) {
@@ -2896,6 +2947,18 @@ static void send_cmd_cgm(void) {
   AppMessageResult sendcmd_senderr = APP_MSG_OK;
   DictionaryResult sendcmd_dicterr = DICT_OK;
   
+  //set iter pointer to null
+  null_dict_buffer(&iter);
+  
+  //check bluetooth
+  //bluetooth_connected_cgm = connection_service_peek_pebble_app_connection();
+  bluetooth_connected_cgm = bluetooth_connection_service_peek();
+  if (bluetooth_connected_cgm == false) {
+    // if no bluetooth, don't send message
+    return;
+  }
+  
+  // have bluetooth
   //APP_LOG(APP_LOG_LEVEL_INFO, "SEND CMD IN, ABOUT TO OPEN APP MSG OUTBOX");
   sendcmd_openerr = app_message_outbox_begin(&iter);
   
@@ -2903,7 +2966,8 @@ static void send_cmd_cgm(void) {
   if (sendcmd_openerr != APP_MSG_OK) {
      //APP_LOG(APP_LOG_LEVEL_INFO, "WATCH SENDCMD OPEN ERROR");
      APP_LOG(APP_LOG_LEVEL_DEBUG, "WATCH SENDCMD OPEN ERR CODE: %i RES: %s", sendcmd_openerr, translate_app_error(sendcmd_openerr));
-     sync_error_callback_cgm(sendcmd_dicterr, sendcmd_openerr, iter);
+       null_dict_buffer(&iter);
+       sync_error_callback_cgm(sendcmd_dicterr, sendcmd_openerr, iter);
      return;
   }
 
@@ -2913,9 +2977,14 @@ static void send_cmd_cgm(void) {
   if (sendcmd_senderr != APP_MSG_OK) {
      //APP_LOG(APP_LOG_LEVEL_INFO, "WATCH SENDCMD SEND ERROR");
      APP_LOG(APP_LOG_LEVEL_DEBUG, "WATCH SENDCMD SEND ERR CODE: %i RES: %s", sendcmd_senderr, translate_app_error(sendcmd_senderr));
-     sync_error_callback_cgm(sendcmd_dicterr, sendcmd_senderr, iter);
+     //if (sendcmd_senderr != APP_MSG_BUSY) {
+       null_dict_buffer(&iter);
+       sync_error_callback_cgm(sendcmd_dicterr, sendcmd_senderr, iter);
+     //}
   }
 
+  null_dict_buffer(&iter);
+  
   //APP_LOG(APP_LOG_LEVEL_INFO, "SEND CMD OUT, SENT MSG TO APP");
   
 } // end send_cmd_cgm
@@ -2926,7 +2995,6 @@ void timer_callback_cgm(void *data) {
   // reset msg timer to NULL
   null_and_cancel_timer (&timer_cgm, false);
   
-  // send message
   send_cmd_cgm();
   
   //APP_LOG(APP_LOG_LEVEL_INFO, "TIMER CALLBACK, SEND CMD DONE, ABOUT TO REGISTER TIMER");
@@ -3151,11 +3219,18 @@ void window_load_cgm(Window *window_cgm) {
   null_and_cancel_timer (&timer_cgm, false);
   
   timer_cgm = app_timer_register((LOADING_MSGSEND_SECS*MS_IN_A_SECOND), timer_callback_cgm, NULL);
+  
   //APP_LOG(APP_LOG_LEVEL_INFO, "WINDOW LOAD, TIMER REGISTER DONE");
   
   // check bluetooth
   //handle_bluetooth_cgm(connection_service_peek_pebble_app_connection());
-  handle_bluetooth_cgm(bluetooth_connection_service_peek());
+  //handle_bluetooth_cgm(bluetooth_connection_service_peek());
+  
+  // check bluetooth and call handler only if bluetooth is up
+  bluetooth_connected_cgm = bluetooth_connection_service_peek();
+  if (bluetooth_connected_cgm == true) {
+    handle_bluetooth_cgm(bluetooth_connected_cgm);
+  }
   
   //APP_LOG(APP_LOG_LEVEL_INFO, "WINDOW LOAD OUT");
 } // end window_load_cgm
@@ -3239,15 +3314,12 @@ static void init_cgm(void) {
     .unload = window_unload_cgm  
   });
   
-  //APP_LOG(APP_LOG_LEVEL_INFO, "INIT CODE, REGISTER APP MESSAGE ERROR HANDLERS"); 
-  //app_message_register_inbox_dropped(inbox_dropped_handler_cgm);
-  //app_message_register_outbox_failed(outbox_failed_handler_cgm);
-  
   //APP_LOG(APP_LOG_LEVEL_INFO, "INIT CODE, ABOUT TO CALL APP MSG OPEN"); 
   //app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
   
-  // Dictionary calculation 1 + 11x7 (11 tuplets, header) + 89 bytes (data) = 167 bytes; pad with 33 bytes
-  app_message_open(200, 200);
+  // Dictionary calculation 1 + 11x7 (11 tuplets, header) + 89 bytes (data) = 167 bytes; pad with 65 bytes
+  // inbound (from JS -> watch), outbound (from watch -> JS)
+  app_message_open(296, 296);
   //APP_LOG(APP_LOG_LEVEL_INFO, "INIT CODE, APP MSG OPEN DONE");
   
   const bool animated_cgm = true;
@@ -3274,8 +3346,7 @@ static void deinit_cgm(void) {
   //APP_LOG(APP_LOG_LEVEL_INFO, "DEINIT, UNSUBSCRIBE BLUETOOTH");
   //bluetooth_connection_service_unsubscribe();
   connection_service_unsubscribe();
-  
-  
+    
   // unsubscribe to the watch battery state service
   battery_state_service_unsubscribe();
   
