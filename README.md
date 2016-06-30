@@ -24,3 +24,4 @@ the new CGMITC face has the following features that can be set in the settings:
 For those on Pebble Time with Color:
 * Color your Watchface - You can set different color patterns on the watchface to further personalize your experience.
 * Highlights for Alerts - Alerts will be highlighted in red, so that they become more noticeable. For coders - can change to any color you like. Also option available for a separate "warning" color before an "urgent" color. Both are currently same color in this code.
+* Text Color - Default text color can be set to black (for lighter color patterns) or white (for dark color patterns).
