@@ -381,7 +381,7 @@ var MessageQueue = (function () {
                     
                     function sendAppMessage(message, ack, nack) {
                     
-                    if (! isValidMessage(message)) {
+                    if (!isValidMessage(message)) {
                     return false;
                     }
                     
@@ -392,9 +392,9 @@ var MessageQueue = (function () {
                                attempts: 0
                                });
                     
-                    setTimeout(function () {
+                    setTimeout(function() {
                                sendNextMessage();
-                               }, 1);
+                               }, 2);
                     
                     return true;
                     }
@@ -410,16 +410,16 @@ var MessageQueue = (function () {
                     }
                     var keys = Object.keys(message);
                     // A message must have at least one key.
-                    if (! keys.length) {
+                    if (!keys.length) {
                     return false;
                     }
                     for (var k = 0; k < keys.length; k += 1) {
                     var validKey = /^[0-9a-zA-Z-_]*$/.test(keys[k]);
-                    if (! validKey) {
+                    if (!validKey) {
                     return false;
                     }
                     var value = message[keys[k]];
-                    if (! validValue(value)) {
+                    if (!validValue(value)) {
                     return false;
                     }
                     }
@@ -427,13 +427,13 @@ var MessageQueue = (function () {
                     return true;
                     
                     function validValue(value) {
-                    switch (typeof(value)) {
+                    switch (typeof value) {
                     case 'string':
                     return true;
                     case 'number':
                     return true;
                     case 'object':
-                    if (toString.call(value) == '[object Array]') {
+                    if (toString.call(value) === '[object Array]') {
                     return true;
                     }
                     }
@@ -445,22 +445,23 @@ var MessageQueue = (function () {
                     
                     if (sending) { return; }
                     var message = queue.shift();
-                    if (! message) { return; }
+                    if (!message) { return; }
                     
                     message.attempts += 1;
                     sending = true;
+                    //console.log("Full JS msg sent: " + JSON.stringify(message)); 
                     Pebble.sendAppMessage(message.message, ack, nack);
                     
                     timer = setTimeout(function () {
                                        timeout();
-                                       }, 1000);
+                                       }, 2000);
                     
                     function ack() {
                     clearTimeout(timer);
-                    setTimeout(function () {
+                    setTimeout(function() {
                                sending = false;
                                sendNextMessage();
-                               }, 200);
+                               }, 400);
                     if (message.ack) {
                     message.ack.apply(null, arguments);
                     }
@@ -473,9 +474,8 @@ var MessageQueue = (function () {
                     setTimeout(function () {
                                sending = false;
                                sendNextMessage();
-                               }, 200 * message.attempts);
-                    }
-                    else {
+                               }, 400 * message.attempts);
+                    } else {
                     if (message.nack) {
                     message.nack.apply(null, arguments);
                     }
@@ -483,10 +483,10 @@ var MessageQueue = (function () {
                     }
                     
                     function timeout() {
-                    setTimeout(function () {
+                    setTimeout(function() {
                                sending = false;
                                sendNextMessage();
-                               }, 1000);
+                               }, 2000);
                     if (message.ack) {
                     message.ack.apply(null, arguments);
                     }
@@ -511,7 +511,7 @@ Pebble.addEventListener("appmessage",
 
 Pebble.addEventListener("showConfiguration", function(e) {
                         console.log("Showing Configuration", JSON.stringify(e));
-                        Pebble.openURL('http://cgminthecloud.github.io/CGMClassicPebble/R80Config.html');
+                        Pebble.openURL('http://cgminthecloud.github.io/CGMClassicPebble/R81Config.html');
                         });
 
 Pebble.addEventListener("webviewclosed", function(e) {
