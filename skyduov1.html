@@ -97,9 +97,13 @@
 					</script>
 					<div data-role="fieldcontain">
 						<label for="t1name">
-							<strong>Enter Initial or IOB:</strong>
+							<strong>User 1 Name:</strong>
 						</label>
 						<input type="text" name="t1name" id="t1name" />
+                        <label for="t1name2">
+							<strong>User 2 Name:</strong>
+						</label>
+						<input type="text" name="t1name2" id="t1name2" />
 					</div>
 					<!-- If MG/DL Form is checked -->
 					<div id="mgdl_form_fields">
@@ -304,6 +308,8 @@
 					var u_name = null;
 					var p_w = null;
 					var endpoint = null;
+                    var endpoint2 = null;
+
 					if ($('input[name=units]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
 						highbg = 'mghighbg';
@@ -314,23 +320,43 @@
 					// establish the variables to be saved
 					if ($("#mode option:selected").val() == "US_Share") {
 						u_name = $("#accountName").val();
+                        u_name2 = $("#accountName2").val();
+
 						p_w = $("#password").val();
+                        p_w2 = $("#password2").val();
+
 						endpoint = "";
+                        endpoint2 = "";
+
 					} else if ($("#mode option:selected").val() == "Non_US_Share") {
 						u_name = $("#n_accountName").val();
+                        u_name2 = $("#n_accountName2").val();
+
 						p_w = $("#n_password").val();
+                        p_w2 = $("#n_password2").val();
+
 						endpoint = "";
+                        endpoint2 = "";
+
 					} else if ($("#mode option:selected").val() == "Nightscout") {
 						u_name = ""
 						p_w = "";
 						endpoint = $("#endpoint").val();
+
+						u_name2 = ""
+						p_w2 = "";
+						endpoint2 = $("#endpoint2").val();
 					}
 					var options = {
 						'mode': $("#mode option:selected").val(),
 						'endpoint': endpoint,
+						'endpoint2': endpoint2,
 						'accountName': u_name,
+						'accountName2': u_name2,
 						'password': p_w,
+						'password2': p_w2,
 						't1name' : $("#t1name").val(),
+						't1name2' : $("#t1name2").val(),
 						'radio' : $('input[name=units]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
 						'highbg' : $("#" + highbg + " option:selected").val(),
@@ -370,19 +396,29 @@
 							$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 							$("#password").val(opts && opts.password ? opts.password : '');
 							$("#US_Share").show().siblings().hide();
+							$("#accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
+							$("#password2").val(opts && opts.password2 ? opts.password2 : '');
+							$("#US_Share2").show().siblings().hide();
 						} else if (opts.mode == "Non_US_Share") {
 							$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
 							$("#n_password").val(opts && opts.password ? opts.password : '');
 							$("#Non_US_Share").show().siblings().hide();
+							$("#n_accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
+							$("#n_password2").val(opts && opts.password2 ? opts.password2 : '');
+							$("#Non_US_Share2").show().siblings().hide();
 						} else if (opts.mode == "Nightscout") {
 							$("#Nightscout").show().siblings().hide();
 						}
 						$("#form-shower").show();
 					}
 					$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
+					$("#endpoint2").val(opts && opts.endpoint2 ? opts.endpoint2 : '');
 					$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+					$("#accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
 					$("#password").val(opts && opts.password ? opts.password : '');
+					$("#password2").val(opts && opts.password2 ? opts.password2 : '');
 					$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
+					$("#t1name2").val(opts && opts.t1name2 ? opts.t1name2 : '');
 					$("input[value='mmol_form']").attr("checked",false).checkboxradio("refresh");
 					$("input[value='mgdl_form']").attr("checked",true).checkboxradio("refresh");
 					document.getElementById('mgdl_form_fields').style.display = 'block';
@@ -420,11 +456,16 @@
 								$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
 								$("#password").val(opts && opts.password ? opts.password : '');
 								$("#US_Share").show().siblings().hide();
+								$("#accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
+								$("#password2").val(opts && opts.password2 ? opts.password2 : '');
+								$("#US_Share2").show().siblings().hide();
 							} else if (opts.mode == "Non_US_Share") {
 								$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
 								$("#n_password").val(opts && opts.password ? opts.password : '');
 								$("#Non_US_Share").show().siblings().hide();
-							} else if (opts.mode == "Nightscout") {
+								$("#n_accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
+								$("#n_password2").val(opts && opts.password2 ? opts.password2 : '');
+								$("#Non_US_Share2").show().siblings().hide();							} else if (opts.mode == "Nightscout") {
 								$("#Nightscout").show().siblings().hide();
 							}
 							$("#form-shower").show();
@@ -432,8 +473,10 @@
 							
 						}
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
-						
+						$("#endpoint2").val(opts && opts.endpoint2 ? opts.endpoint2 : '');						
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
+						$("#t1name2").val(opts && opts.t1name2 ? opts.t1name2 : '');
+
 						if (opts.radio == 'mgdl_form'){
 							$("input[value='" + opts.radio + "']").attr("checked",true).checkboxradio("refresh");
 							document.getElementById('mgdl_form_fields').style.display = 'block';
