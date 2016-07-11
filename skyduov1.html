@@ -34,24 +34,49 @@
 				<div data-role="content" id="entry-forms">
 					
 					<form name="US_Share" id="US_Share" style="display:none">
-						<label for="accountName">Share User 1: </label>
+                    <div data-role="fieldcontain">
+						<label for="t1name">
+							<strong>Top Users Name:</strong>
+						</label>
+						<input type="text" name="t1name" id="t1name" />
+						<label for="accountName">Share Username: </label>
 						<input type="text" name="accountName" id="accountName" value="" autocapitalize="off" autocorrect="off"/>
-						<label for="password">Share Password 1: </label>
+						<label for="password">Share Password: </label>
 						<input type="password" name="password" id="password" value="" />
-                        <label for="accountName2">Share User 2: </label>
+                        </div>
+
+                       <div data-role="fieldcontain">
+                        <label for="t1name2">
+							<strong>Bottom Users Name:</strong>
+						</label>
+						<input type="text" name="t1name2" id="t1name2" />
+                        <label for="accountName2">Share Username: </label>
 						<input type="text" name="accountName2" id="accountName2" value="" autocapitalize="off" autocorrect="off"/>
-						<label for="password">Share Password 2: </label>
+						<label for="password">Share Password: </label>
 						<input type="password" name="password2" id="password2" value="" />
+                        </div>
 					</form>
 					<form name="Non_US_Share" id="Non_US_Share" style="display:none">
-						<label for="accountName">Share User 1: </label>
+                         <div data-role="fieldcontain">
+						<label for="t1name">
+							<strong>Top Users Name:</strong>
+						</label>
+						<input type="text" name="t1name" id="t1name" />
+						<label for="accountName">Share Username: </label>
 						<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
-						<label for="password">Share Password 1: </label>
+						<label for="password">Share Password: </label>
 						<input type="password" name="n_password" id="n_password" value="" />
-                        <label for="accountName2">Share User 2: </label>
+                        </div>
+                        <div data-role="fieldcontain">
+						<label for="t1name">
+							<strong>Bottom Users Name:</strong>
+						</label>
+						<input type="text" name="t1name" id="t1name" />
+                        <label for="accountName2">Share Username: </label>
 						<input type="text" name="n_accountName2" id="n_accountName2" value="" autocapitalize="off"autocorrect="off"/>
-						<label for="password2">Share Password2: </label>
+						<label for="password2">Share Password: </label>
 						<input type="password" name="n_password2" id="n_password2" value="" />
+                        </div>
 					</form>
 					<form name="Nightscout" id="Nightscout" style="display:none">
 						<script>
@@ -59,12 +84,23 @@
 								document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
 							}
 						</script>
+                        <div data-role="fieldcontain">
+						<label for="t1name">
+							<strong>Top Users Name:</strong>
+						</label>
+						<input type="text" name="t1name" id="t1name" />
 						<label for="endpoint">
 							<strong>Website for User 1:
 							</strong>
 						</label>
 						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
 						<div id="message">ie:https://name.azurewebsites.net/</div>
+                        </div>
+                        <div data-role="fieldcontain">
+						<label for="t1name">
+							<strong>Bottom Users Name:</strong>
+						</label>
+						<input type="text" name="t1name" id="t1name" />
                         <label for="endpoint">
 							<strong>Website for User 2:
 							</strong>
@@ -95,16 +131,7 @@
 							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
 						}
 					</script>
-					<div data-role="fieldcontain">
-						<label for="t1name">
-							<strong>User 1 Name:</strong>
-						</label>
-						<input type="text" name="t1name" id="t1name" />
-                        <label for="t1name2">
-							<strong>User 2 Name:</strong>
-						</label>
-						<input type="text" name="t1name2" id="t1name2" />
-					</div>
+					
 					<!-- If MG/DL Form is checked -->
 					<div id="mgdl_form_fields">
 						<legend>
