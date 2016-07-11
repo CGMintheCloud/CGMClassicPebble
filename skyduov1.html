@@ -64,7 +64,7 @@
                 <form id="Non_US_Share" name="Non_US_Share" style=
                 "display:none">
                     <div data-role="fieldcontain">
-                        <label for="t1name"><strong>Top User Name:</strong></label> 
+                        <label for="t1name1"><strong>Top User Name:</strong></label> 
                         <input id="t1name1" name="t1name1" type="text"> 
                         <label for="accountName">Share Username:</label> 
                         <input id="n_accountName" name="n_accountName" type="text" value=""> 
@@ -564,7 +564,7 @@
                     	t1name1 = ""
                         u_name = ""
                         p_w = "";
-                        endpoint = $("#endpoint").val();
+                        endpoint1 = $("#endpoint1").val();
                         
                         t1name2 = ""
                         u_name2 = ""
@@ -626,9 +626,11 @@
                             $("#password2").val(opts && opts.password2 ? opts.password2 : '');
                             $("#US_Share2").show().siblings().hide();
                         } else if (opts.mode == "Non_US_Share") {
+                           $("#t1name1").val(opts && opts.t1name1 ? opts.t1name1 : '');
                             $("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
                             $("#n_password").val(opts && opts.password ? opts.password : '');
                             $("#Non_US_Share").show().siblings().hide();
+                            $("#t1name2").val(opts && opts.t1name2 ? opts.t1name2 : '');
                             $("#n_accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
                             $("#n_password2").val(opts && opts.password2 ? opts.password2 : '');
                             $("#Non_US_Share2").show().siblings().hide();
