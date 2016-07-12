@@ -697,7 +697,9 @@
                                 $("#t1name2").val(opts && opts.t1name2 ? opts.t1name2 : '');
                                 $("#n_accountName2").val(opts && opts.accountName2 ? opts.accountName2 : '');
                                 $("#n_password2").val(opts && opts.password2 ? opts.password2 : '');
-                                $("#Non_US_Share2").show().siblings().hide();                           } else if (opts.mode == "Nightscout") {
+                                $("#Non_US_Share2").show().siblings().hide();                           
+                                
+                            } else if (opts.mode == "Nightscout") {
                                 $("#Nightscout").show().siblings().hide();
                             }
                             $("#form-shower").show();
