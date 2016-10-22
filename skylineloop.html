@@ -27,27 +27,17 @@
 		<legend><strong>Choose mg/dl or mmol:</strong></legend>
 						<input name="tipo_cadastro" type="radio" id="mgdl_form"" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
 						<label for="mgdl_form">mg/dl</label>
-
 						<input type="radio" name="tipo_cadastro" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
 						<label for="mmol_form">mmol</label>
 	</fieldset>
-<script>
-function myFunction() {
-    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble?units=mmol";
-}
-</script>
-<script>
-function clearFunction() {
-    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
-}
-</script>
+
 			<div data-role="fieldcontain">
 			  <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
 			  <input type="text" name="endpoint" id="endpoint" />
-		  <div id="message">ie:https://name.azurewebsites.net/pebble</div></div>
-		  
+		  <div id="message">ie:https://name.azurewebsites.net</div></div>
+					<div data-role="fieldcontain">
 						<label for="t1name">
-							<strong>Enter T1 Name:</strong>
+							<strong>Enter Initial or IOB:</strong>
 						</label>
 						<input type="text" name="t1name" id="t1name" />
 					</div>
@@ -191,7 +181,14 @@ function clearFunction() {
 							<option value="1">Yes</option>
 							<option value="0">No</option>
 						</select>
-					
+					       <label for="mycolors">Colour Palette</label>
+					<select name="mycolors" id="mycolors">
+						<option value="0">Blues</option>
+						<option value="1">Purples</option>
+						<option value="2">Black & White</option>
+						<option value="3">Greens</option>
+						<option value="4">Pinks</option>
+					</select>
 						<p>
 						<div data-role="fieldcontain">
 							<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal">
@@ -210,15 +207,24 @@ function clearFunction() {
 						</div>
 					</div>
 					<div class="ui-grid-solo">
-						<div class="ui-block-a"><button type="submit" data-theme="a" id="b-default">Default Settings
+						<div class="ui-block-a"><button type="submit" data-theme="a" id="b-default">Default Settings</div>
+					</div>
+					
 					<div class="ui-body ui-body-b">
 						<fieldset class="ui-grid-a">
 							<div class="ui-block-a"><button type="submit" data-theme="d" id="b-cancel">Cancel</button></div>
 							<div class="ui-block-b"><button type="submit" data-theme="a" id="b-submit">Submit</button></div>
 						</fieldset>
+					</div>
+				</div>
 			</div>
+		</div>
 		
-            <script type='text/javascript'>
+		<script type='text/javascript'>
+			$("#mode").on("change", function() {
+				$("#" + $(this).val()).show().siblings().hide();
+				$("#form-shower").show();
+			});
 			
 			$(window).load( function() {
 				if (console && console.log && console.log.call) {
@@ -238,7 +244,7 @@ function clearFunction() {
 					var u_name = null;
 					var p_w = null;
 					var endpoint = null;
-					if ($('input[name=tipo_cadastro]:checked').val() == 'mgdl_form'){
+					if ($('input[name=units]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
 						highbg = 'mghighbg';
 					} else {
@@ -265,7 +271,7 @@ function clearFunction() {
 						'accountName': u_name,
 						'password': p_w,
 						't1name' : $("#t1name").val(),
-						'radio' : $('input[name=tipo_cadastro]:checked').val(),
+						'radio' : $('input[name=units]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
 						'highbg' : $("#" + highbg + " option:selected").val(),
 						'lowsnooze' : $("#lowsnooze option:selected").val(),
@@ -274,6 +280,7 @@ function clearFunction() {
 						'highvibe' : $("#highvibe option:selected").val(),
 						'vibepattern' : $("#vibepattern option:selected").val(),
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
+                        'mycolors' : $("#mycolors option:selected").val(),
 						'rawvibrate' : $("#rawvibrate option:selected").val()
 					}
 					try {
@@ -330,6 +337,7 @@ function clearFunction() {
 					$("#highvibe").val('3').selectmenu("refresh");
 					$("#vibepattern").val('2').selectmenu("refresh");
 					$("#rawvibrate").val('1').selectmenu("refresh");
+                    $("#mycolors").val('0').selectmenu("refresh");
 					$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 					$("input[value='24']").attr("checked",false).checkboxradio("refresh");
 				}
@@ -346,7 +354,6 @@ function clearFunction() {
 						$('#status').text(['has opts', JSON.stringify(opts)].join(' '));
 						console.log("opts", JSON.stringify(opts));
 						$("#mode").val(opts.mode).selectmenu("refresh");
-
 						// load username/password to correct variables if it's Sharedata as found
 						if (opts.mode) {
 							if (opts.mode == "US_Share") {
@@ -364,10 +371,8 @@ function clearFunction() {
 						
 							
 						}
-
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
-						// $("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-						// $("#password").val(opts && opts.password ? opts.password : '');
+						
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
 						if (opts.radio == 'mgdl_form'){
 							$("input[value='" + opts.radio + "']").attr("checked",true).checkboxradio("refresh");
@@ -389,6 +394,7 @@ function clearFunction() {
 						$("#highvibe").val(opts.highvibe).selectmenu("refresh");
 						$("#vibepattern").val(opts.vibepattern).selectmenu("refresh");
 						$("#rawvibrate").val(opts.rawvibrate).selectmenu("refresh");
+						$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 						$("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
 					} else {
 						console.log("no data");
@@ -418,7 +424,6 @@ function clearFunction() {
 					}
 					$('#status').text('ready');
 					$('#status').text('setting up events');
-					//localStorage.clear();
 	
 					$("#b-cancel").click(function() {
 						console.log("Cancel");
@@ -428,22 +433,14 @@ function clearFunction() {
 					
 					$("#b-submit").click(function() {
 						console.log("Submit");
-						//var return_to = getQueryParam('return_to', 'pebblejs://close#');
-						//var location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
-						//  console.log("Warping to: " + location);
-						//document.location = location;
+						
 						var return_to = getQueryParam('return_to', 'pebblejs://close#');
 						document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
 						
 						
-						//	location.href = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions));
 						$('#status').text('submitting');
 						
-						//  var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(saveOptions()));
-						//   console.log("Warping to: " + location);
-						//    $('#status').text('closing');
-						//    document.location = location;
-						// console.log('saved', window.localStorage.cgmOpts);
+				
 					});
 					
 					$("#b-default").click(function() {
@@ -465,8 +462,6 @@ function clearFunction() {
 				}
 			}
 			
-		                </script>
-	</div>
-</div>
-</body>
+		</script>
+	</body>
 </html>
