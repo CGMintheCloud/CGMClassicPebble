@@ -197,6 +197,11 @@
                         <option value="1">On</option>
                         <option value="0">Off ("Sleep Face")</option>
                     </select>
+                    <label for="animateon">Show Animations On or Off</label>
+                    <select name="animateon" id="animateon">
+                        <option value="1">On</option>
+                        <option value="0">Off</option>
+                    </select>
 					       <label for="mycolors">Colour Palette</label>
 					<select name="mycolors" id="mycolors">
 						<option value="0">Blues</option>
@@ -236,7 +241,8 @@
 			</div>
 		</div>
 		
-			
+			  <script type='text/javascript'>
+
 			$(window).load( function() {
 				if (console && console.log && console.log.call) {
 				} else {
@@ -252,9 +258,8 @@
 					var checkradio = null;
 					var lowbg = null;
 					var highbg = null;
-					
-					var endpoint = null;
-					if ($('input[name=units]:checked').val() == 'mgdl_form'){
+                    
+                 					if ($('input[name=units]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
 						highbg = 'mghighbg';
 					} else {
@@ -275,6 +280,8 @@
 						'vibepattern' : $("#vibepattern option:selected").val(),
                         'rawvibrate' : $("#rawvibrate option:selected").val(),
            				 'vibeon' : $("#vibeon option:selected").val(),
+                                     'animateon' : $("#animateon option:selected").val(),
+
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
                         'mycolors' : $("#mycolors option:selected").val(),
 						'rawvibrate' : $("#rawvibrate option:selected").val()
@@ -316,6 +323,8 @@
 					$("#vibepattern").val('2').selectmenu("refresh");
 					$("#rawvibrate").val('1').selectmenu("refresh");
                     $("#vibeon").val('1').selectmenu("refresh");
+                    $("#rawon").val('1').selectmenu("refresh");
+                    $("#animateon").val('1').selectmenu("refresh");
                     $("#mycolors").val('0').selectmenu("refresh");
 					$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 					$("input[value='24']").attr("checked",false).checkboxradio("refresh");
@@ -357,7 +366,9 @@
 						$("#vibepattern").val(opts.vibepattern).selectmenu("refresh");
 						$("#rawvibrate").val(opts.rawvibrate).selectmenu("refresh");
                         $("#vibeon").val(opts.vibeon).selectmenu("refresh");
-           				 $("#rawon").val(opts.rawon).selectmenu("refresh");
+           				$("#rawon").val(opts.rawon).selectmenu("refresh");
+                        $("#animateon").val(opts.animateon).selectmenu("refresh");
+
 						$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 						$("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
 					} else {
