@@ -1,49 +1,90 @@
+
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Pebble Settings</title> 
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-	<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
-	<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
-
-  <style type='text/css'>
-    .hidden {display: none; }
-#divs div { display:none; }
-  </style>
-
-</head>
-<body>
-<div data-role="page" id="main">
-      <div data-role="header" class="jqm-header">
-        <h2>Pebble Settings</h2>
-        <tt class="hidden" id="status"></tt>
-        </div>
-<div data-role="fieldcontain">
-	
-	<div data-role="content">
-      <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
-		<legend><strong>Choose mg/dl or mmol:</strong></legend>
-						<input name="tipo_cadastro" type="radio" id="mgdl_form"" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
-						<label for="mgdl_form">mg/dl</label>
-						<input type="radio" name="tipo_cadastro" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
-						<label for="mmol_form">mmol</label>
-	</fieldset>
-<script>
-function myFunction() {
-    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble?units=mmol";
-}
-</script>
-<script>
-function clearFunction() {
-    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
-}
-</script>
+	<head>
+		<title>Pebble Settings</title> 
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+		<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+		
+		<style type='text/css'>
+			.hidden {display: none; }
+			#divs div { display:none; }
+		</style>
+			
+	</head>
+	<body>
+		<div data-role="page" id="main">
+			<div data-role="header" class="jqm-header">
+				<h2>Pebble Settings</h2>
+			</div>
 			<div data-role="fieldcontain">
-			  <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
-			  <input type="text" name="endpoint" id="endpoint" />
-		  <div id="message">ie:https://name.azurewebsites.net/</div></div>
+				<div data-role="content" class="ui-body ui-body-a" id="form-shower">
+					<form>
+						<select name="mode" id="mode" style="width: 100%;">
+							<option value="none">Select Mode (REQUIRED):</option>
+							<option value="US_Share">US-Share</option>
+							<option value="Non_US_Share">Non-US-Share</option>
+							<option value="Nightscout">Nightscout</option>
+						</select>
+					</form>
+				</div>
+				<div data-role="content" id="entry-forms">
+					
+					<form name="US_Share" id="US_Share" style="display:none">
+						<label for="accountName">Share Username: </label>
+						<input type="text" name="accountName" id="accountName" value="" autocapitalize="off" autocorrect="off"/>
+						<label for="password">Share Password: </label>
+						<input type="password" name="password" id="password" value="" />
+						<label for="remember">Remember Password</label>
+						<input type="checkbox" name="remember" id="remember" />
+					</form>
+					<form name="Non_US_Share" id="Non_US_Share" style="display:none">
+						<label for="accountName">Share Username: </label>
+						<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
+						<label for="password">Share Password: </label>
+						<input type="password" name="n_password" id="n_password" value="" />
+						<label for="remember">Remember Password</label>
+						<input type="checkbox" name="remember" id="remember" />
+					</form>
+					<form name="Nightscout" id="Nightscout" style="display:none">
+						<script>
+							function clearFunction() {
+								document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
+							}
+						</script>
+						<label for="endpoint">
+							<strong>Enter Nightscout Website:
+							</strong>
+						</label>
+						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
+						<div id="message">ie:https://name.azurewebsites.net</div>
+					</form>      
+					<tt class="hidden" id="status"></tt>
+				</div>
+			</div>
+			<div data-role="fieldcontain">
+				
+				<div data-role="content">
+					<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
+						<legend><strong>Choose Units:</strong></legend>
+						<input name="units" type="radio" id="mgdl_form" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
+						<label for="mgdl_form">mg/dl</label>
+						<input type="radio" name="units" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
+						<label for="mmol_form">mmol</label>
+					</fieldset>
+					<script>
+						function myFunction() {
+							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
+						}
+					</script>
+					<script>
+						function clearFunction() {
+							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
+						}
+					</script>
 					<div data-role="fieldcontain">
 						<label for="t1name">
 							<strong>Enter Initial or IOB:</strong>
@@ -190,6 +231,11 @@ function clearFunction() {
 							<option value="1">Yes</option>
 							<option value="0">No</option>
 						</select>
+                         <label for="vibeon">Select All Vibration On or Off (Set for "Sleep Face")</label>
+                    <select name="vibeon" id="vibeon">
+                        <option value="1">On</option>
+                        <option value="0">Off ("Sleep Face")</option>
+                    </select>
 					       <label for="mycolors">Colour Palette</label>
 					<select name="mycolors" id="mycolors">
 						<option value="0">Blues</option>
@@ -229,11 +275,6 @@ function clearFunction() {
 			</div>
 		</div>
 		
-		<script type='text/javascript'>
-			$("#mode").on("change", function() {
-				$("#" + $(this).val()).show().siblings().hide();
-				$("#form-shower").show();
-			});
 			
 			$(window).load( function() {
 				if (console && console.log && console.log.call) {
@@ -250,8 +291,7 @@ function clearFunction() {
 					var checkradio = null;
 					var lowbg = null;
 					var highbg = null;
-					var u_name = null;
-					var p_w = null;
+					
 					var endpoint = null;
 					if ($('input[name=units]:checked').val() == 'mgdl_form'){
 						lowbg = 'mglowbg';
@@ -260,25 +300,9 @@ function clearFunction() {
 						lowbg = 'mmlowbg';
 						highbg = 'mmhighbg';
 					}
-					// establish the variables to be saved
-					if ($("#mode option:selected").val() == "US_Share") {
-						u_name = $("#accountName").val();
-						p_w = $("#password").val();
-						endpoint = "";
-					} else if ($("#mode option:selected").val() == "Non_US_Share") {
-						u_name = $("#n_accountName").val();
-						p_w = $("#n_password").val();
-						endpoint = "";
-					} else if ($("#mode option:selected").val() == "Nightscout") {
-						u_name = ""
-						p_w = "";
-						endpoint = $("#endpoint").val();
-					}
+					
 					var options = {
-						'mode': $("#mode option:selected").val(),
-						'endpoint': endpoint,
-						'accountName': u_name,
-						'password': p_w,
+            			'endpoint': $("#endpoint").val(),
 						't1name' : $("#t1name").val(),
 						'radio' : $('input[name=units]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
@@ -288,6 +312,8 @@ function clearFunction() {
 						'lowvibe' : $("#lowvibe option:selected").val(),
 						'highvibe' : $("#highvibe option:selected").val(),
 						'vibepattern' : $("#vibepattern option:selected").val(),
+                        'rawvibrate' : $("#rawvibrate option:selected").val(),
+           				 'vibeon' : $("#vibeon option:selected").val(),
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
                         'mycolors' : $("#mycolors option:selected").val(),
 						'rawvibrate' : $("#rawvibrate option:selected").val()
@@ -311,26 +337,8 @@ function clearFunction() {
 					_raw = window.localStorage && window.localStorage.cgmOpts
 					? window.localStorage.cgmOpts : null;
 					opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
-					$("#mode").val(opts && opts.mode ? opts.mode : '').selectmenu("refresh");
 					
-					// load username/password to correct variables if it's Sharedata as found
-					if (opts && opts.mode) {
-						if (opts.mode == "US_Share") {
-							$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-							$("#password").val(opts && opts.password ? opts.password : '');
-							$("#US_Share").show().siblings().hide();
-						} else if (opts.mode == "Non_US_Share") {
-							$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
-							$("#n_password").val(opts && opts.password ? opts.password : '');
-							$("#Non_US_Share").show().siblings().hide();
-						} else if (opts.mode == "Nightscout") {
-							$("#Nightscout").show().siblings().hide();
-						}
-						$("#form-shower").show();
-					}
 					$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
-					$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-					$("#password").val(opts && opts.password ? opts.password : '');
 					$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
 					$("input[value='mmol_form']").attr("checked",false).checkboxradio("refresh");
 					$("input[value='mgdl_form']").attr("checked",true).checkboxradio("refresh");
@@ -346,6 +354,7 @@ function clearFunction() {
 					$("#highvibe").val('3').selectmenu("refresh");
 					$("#vibepattern").val('2').selectmenu("refresh");
 					$("#rawvibrate").val('1').selectmenu("refresh");
+                    $("#vibeon").val('1').selectmenu("refresh");
                     $("#mycolors").val('0').selectmenu("refresh");
 					$("input[value='12']").attr("checked",true).checkboxradio("refresh");
 					$("input[value='24']").attr("checked",false).checkboxradio("refresh");
@@ -362,24 +371,7 @@ function clearFunction() {
 						opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
 						$('#status').text(['has opts', JSON.stringify(opts)].join(' '));
 						console.log("opts", JSON.stringify(opts));
-						$("#mode").val(opts.mode).selectmenu("refresh");
-						// load username/password to correct variables if it's Sharedata as found
-						if (opts.mode) {
-							if (opts.mode == "US_Share") {
-								$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
-								$("#password").val(opts && opts.password ? opts.password : '');
-								$("#US_Share").show().siblings().hide();
-							} else if (opts.mode == "Non_US_Share") {
-								$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
-								$("#n_password").val(opts && opts.password ? opts.password : '');
-								$("#Non_US_Share").show().siblings().hide();
-							} else if (opts.mode == "Nightscout") {
-								$("#Nightscout").show().siblings().hide();
-							}
-							$("#form-shower").show();
 						
-							
-						}
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 						
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
@@ -403,6 +395,8 @@ function clearFunction() {
 						$("#highvibe").val(opts.highvibe).selectmenu("refresh");
 						$("#vibepattern").val(opts.vibepattern).selectmenu("refresh");
 						$("#rawvibrate").val(opts.rawvibrate).selectmenu("refresh");
+                        $("#vibeon").val(opts.vibeon).selectmenu("refresh");
+           				 $("#rawon").val(opts.rawon).selectmenu("refresh");
 						$("#mycolors").val(opts.mycolors).selectmenu("refresh");
 						$("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
 					} else {
