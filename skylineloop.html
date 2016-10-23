@@ -4,18 +4,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pebble Settings</title> 
-    <meta charset="utf-8">
+	<title>Pebble Settings</title> 
+	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-    <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
-    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
- 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+	<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+
   <style type='text/css'>
     .hidden {display: none; }
 #divs div { display:none; }
   </style>
- 
+
 </head>
 <body>
 <div data-role="page" id="main">
@@ -23,38 +23,40 @@
         <h2>Pebble Settings</h2>
         <tt class="hidden" id="status"></tt>
         </div>
-			
-			<div data-role="fieldcontain">
-				
-				<div data-role="content">
-					<fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
-						<legend><strong>Choose Units:</strong></legend>
-						<input name="units" type="radio" id="mgdl_form" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
+<div data-role="fieldcontain">
+	
+	<div data-role="content">
+      <fieldset data-role="controlgroup" id="Radio_Options" data-type="horizontal" >
+		<legend><strong>Choose Units:</strong></legend>
+						<input name="units" type="radio" id="mgdl_form"" onchange="onchange_handler(this, 'mgdl');" onClick="clearFunction()" onmouseup="onchange_handler(this, 'mgdl');" value="mgdl_form"/>
 						<label for="mgdl_form">mg/dl</label>
+
 						<input type="radio" name="units" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
 						<label for="mmol_form">mmol</label>
-					</fieldset>
-					<script>
-						function myFunction() {
-							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
-						}
-					</script>
-					<script>
-						function clearFunction() {
-							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
-						}
-					</script>
-                    <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
-              <input type="text" name="endpoint" id="endpoint" />
-          <div id="message">ie:https://name.azurewebsites.net/pebble</div></div>
-          
+	</fieldset>
+<script>
+function myFunction() {
+    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net";
+}
+</script>
+<script>
+function clearFunction() {
+    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net";
+}
+</script>
+			<div data-role="fieldcontain">
+			  <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
+			  <input type="text" name="endpoint" id="endpoint" />
+		  <div id="message">ie:https://name.azurewebsites.net</div></div>
+		  
 <div data-role="fieldcontain">
-					<div data-role="fieldcontain">
-						<label for="t1name">
-							<strong>Enter Initial or IOB:</strong>
-						</label>
-						<input type="text" name="t1name" id="t1name" />
-					</div>
+				<label for="t1name">
+				<strong>Enter T1 Name:</strong>
+				
+		    <input type="text" name="t1name" id="t1name" />
+</div>
+<div data-role="fieldcontain">
+				
 					<!-- If MG/DL Form is checked -->
 					<div id="mgdl_form_fields">
 						<legend>
