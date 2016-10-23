@@ -30,11 +30,20 @@
 						<input type="radio" name="tipo_cadastro" id="mmol_form" value="mmol_form" !important" onClick="myFunction()" onchange="onchange_handler(this, 'mmol');" onmouseup="onchange_handler(this, //'mmol');">
 						<label for="mmol_form">mmol</label>
 	</fieldset>
-
+<script>
+function myFunction() {
+    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble?units=mmol";
+}
+</script>
+<script>
+function clearFunction() {
+    document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/pebble";
+}
+</script>
 			<div data-role="fieldcontain">
 			  <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
 			  <input type="text" name="endpoint" id="endpoint" />
-		  <div id="message">ie:https://name.azurewebsites.net</div></div>
+		  <div id="message">ie:https://name.azurewebsites.net/</div></div>
 					<div data-role="fieldcontain">
 						<label for="t1name">
 							<strong>Enter Initial or IOB:</strong>
@@ -252,10 +261,24 @@
 						highbg = 'mmhighbg';
 					}
 					// establish the variables to be saved
-		
+					if ($("#mode option:selected").val() == "US_Share") {
+						u_name = $("#accountName").val();
+						p_w = $("#password").val();
+						endpoint = "";
+					} else if ($("#mode option:selected").val() == "Non_US_Share") {
+						u_name = $("#n_accountName").val();
+						p_w = $("#n_password").val();
+						endpoint = "";
+					} else if ($("#mode option:selected").val() == "Nightscout") {
+						u_name = ""
+						p_w = "";
 						endpoint = $("#endpoint").val();
+					}
 					var options = {
+						'mode': $("#mode option:selected").val(),
 						'endpoint': endpoint,
+						'accountName': u_name,
+						'password': p_w,
 						't1name' : $("#t1name").val(),
 						'radio' : $('input[name=units]:checked').val(),
 						'lowbg' : $("#" + lowbg + " option:selected").val(),
@@ -287,8 +310,27 @@
 					var opts = { };
 					_raw = window.localStorage && window.localStorage.cgmOpts
 					? window.localStorage.cgmOpts : null;
-					opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });								
+					opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
+					$("#mode").val(opts && opts.mode ? opts.mode : '').selectmenu("refresh");
+					
+					// load username/password to correct variables if it's Sharedata as found
+					if (opts && opts.mode) {
+						if (opts.mode == "US_Share") {
+							$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+							$("#password").val(opts && opts.password ? opts.password : '');
+							$("#US_Share").show().siblings().hide();
+						} else if (opts.mode == "Non_US_Share") {
+							$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
+							$("#n_password").val(opts && opts.password ? opts.password : '');
+							$("#Non_US_Share").show().siblings().hide();
+						} else if (opts.mode == "Nightscout") {
+							$("#Nightscout").show().siblings().hide();
+						}
+						$("#form-shower").show();
+					}
 					$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
+					$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+					$("#password").val(opts && opts.password ? opts.password : '');
 					$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
 					$("input[value='mmol_form']").attr("checked",false).checkboxradio("refresh");
 					$("input[value='mgdl_form']").attr("checked",true).checkboxradio("refresh");
@@ -319,7 +361,25 @@
 						? window.localStorage.cgmOpts : null;
 						opts = (_raw && _raw.length && _raw.length > 5 ? JSON.parse(_raw) : { });
 						$('#status').text(['has opts', JSON.stringify(opts)].join(' '));
-						console.log("opts", JSON.stringify(opts));						
+						console.log("opts", JSON.stringify(opts));
+						$("#mode").val(opts.mode).selectmenu("refresh");
+						// load username/password to correct variables if it's Sharedata as found
+						if (opts.mode) {
+							if (opts.mode == "US_Share") {
+								$("#accountName").val(opts && opts.accountName ? opts.accountName : '');
+								$("#password").val(opts && opts.password ? opts.password : '');
+								$("#US_Share").show().siblings().hide();
+							} else if (opts.mode == "Non_US_Share") {
+								$("#n_accountName").val(opts && opts.accountName ? opts.accountName : '');
+								$("#n_password").val(opts && opts.password ? opts.password : '');
+								$("#Non_US_Share").show().siblings().hide();
+							} else if (opts.mode == "Nightscout") {
+								$("#Nightscout").show().siblings().hide();
+							}
+							$("#form-shower").show();
+						
+							
+						}
 						$("#endpoint").val(opts && opts.endpoint ? opts.endpoint : '');
 						
 						$("#t1name").val(opts && opts.t1name ? opts.t1name : '');
@@ -386,7 +446,9 @@
 						var return_to = getQueryParam('return_to', 'pebblejs://close#');
 						document.location = return_to + encodeURIComponent(JSON.stringify(saveOptions()));
 						
+						
 						$('#status').text('submitting');
+						
 				
 					});
 					
