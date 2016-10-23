@@ -1,25 +1,28 @@
 
+
+ 
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Pebble Settings</title> 
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-		<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
-		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
-		
-		<style type='text/css'>
-			.hidden {display: none; }
-			#divs div { display:none; }
-		</style>
-			
-	</head>
-	<body>
-		<div data-role="page" id="main">
-			<div data-role="header" class="jqm-header">
-				<h2>Pebble Settings</h2>
-			</div>
+<head>
+    <title>Pebble Settings</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+    <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+ 
+  <style type='text/css'>
+    .hidden {display: none; }
+#divs div { display:none; }
+  </style>
+ 
+</head>
+<body>
+<div data-role="page" id="main">
+      <div data-role="header" class="jqm-header">
+        <h2>Pebble Settings</h2>
+        <tt class="hidden" id="status"></tt>
+        </div>
 			
 			<div data-role="fieldcontain">
 				
@@ -284,7 +287,6 @@
 
 						'timeformat' :	$('input[name=TimeRadio]:checked').val(),
                         'mycolors' : $("#mycolors option:selected").val(),
-						'rawvibrate' : $("#rawvibrate option:selected").val()
 					}
 					try {
 						if (window.localStorage && window.localStorage.setItem) {
