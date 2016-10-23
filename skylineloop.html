@@ -20,51 +20,7 @@
 			<div data-role="header" class="jqm-header">
 				<h2>Pebble Settings</h2>
 			</div>
-			<div data-role="fieldcontain">
-				<div data-role="content" class="ui-body ui-body-a" id="form-shower">
-					<form>
-						<select name="mode" id="mode" style="width: 100%;">
-							<option value="none">Select Mode (REQUIRED):</option>
-							<option value="US_Share">US-Share</option>
-							<option value="Non_US_Share">Non-US-Share</option>
-							<option value="Nightscout">Nightscout</option>
-						</select>
-					</form>
-				</div>
-				<div data-role="content" id="entry-forms">
-					
-					<form name="US_Share" id="US_Share" style="display:none">
-						<label for="accountName">Share Username: </label>
-						<input type="text" name="accountName" id="accountName" value="" autocapitalize="off" autocorrect="off"/>
-						<label for="password">Share Password: </label>
-						<input type="password" name="password" id="password" value="" />
-						<label for="remember">Remember Password</label>
-						<input type="checkbox" name="remember" id="remember" />
-					</form>
-					<form name="Non_US_Share" id="Non_US_Share" style="display:none">
-						<label for="accountName">Share Username: </label>
-						<input type="text" name="n_accountName" id="n_accountName" value="" autocapitalize="off"autocorrect="off"/>
-						<label for="password">Share Password: </label>
-						<input type="password" name="n_password" id="n_password" value="" />
-						<label for="remember">Remember Password</label>
-						<input type="checkbox" name="remember" id="remember" />
-					</form>
-					<form name="Nightscout" id="Nightscout" style="display:none">
-						<script>
-							function clearFunction() {
-								document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
-							}
-						</script>
-						<label for="endpoint">
-							<strong>Enter Nightscout Website:
-							</strong>
-						</label>
-						<input type="text" name="endpoint" id="endpoint" autocapitalize="off" autocorrect="off"/>
-						<div id="message">ie:https://name.azurewebsites.net</div>
-					</form>      
-					<tt class="hidden" id="status"></tt>
-				</div>
-			</div>
+			
 			<div data-role="fieldcontain">
 				
 				<div data-role="content">
@@ -85,6 +41,11 @@
 							document.getElementById("message").innerHTML = "ie:https://name.azurewebsites.net/";
 						}
 					</script>
+                    <label for="endpoint"><strong>Enter Data Endpoint:</strong></label>
+              <input type="text" name="endpoint" id="endpoint" />
+          <div id="message">ie:https://name.azurewebsites.net/pebble</div></div>
+          
+<div data-role="fieldcontain">
 					<div data-role="fieldcontain">
 						<label for="t1name">
 							<strong>Enter Initial or IOB:</strong>
