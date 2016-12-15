@@ -47,8 +47,8 @@ function clearFunction() {
                 		<fieldset data-role="controlgroup" data-type="horizontal" id="LoopOpenaps">
 
 
-					<label><input id="LoopOpenaps" name="LoopOpenaps" required="" type="radio" value="0" selected="selected"> Loop</label> 
-                    <label><input id="LoopOpenaps" name="LoopOpenaps" type="radio" value="1"> OpenAps</label><br>
+					<label><input id="Loop" name="LoopOpenaps" required="" type="radio" value="0" selected="selected"> Loop</label> 
+                    <label><input id="LoopOpenaps" name="Openaps" type="radio" value="1"> OpenAps</label><br>
 				</fieldset>
                 </div>
 				<div data-role="fieldcontain">
@@ -496,8 +496,8 @@ function clearFunction() {
 				                $("#mycolors").val('0').selectmenu("refresh");
 				                $("input[value='12']").attr("checked",true).checkboxradio("refresh");
 				                $("input[value='24']").attr("checked",false).checkboxradio("refresh");
-				                $("input[value='LoopOpenaps']").attr("checked",false).checkboxradio("refresh");
-				                $("input[value='LoopOpenaps']").attr("checked",true).checkboxradio("refresh");
+				                $("input[value='Loop']").attr("checked",true).checkboxradio("refresh");
+				                $("input[value='Openaps']").attr("checked",false).checkboxradio("refresh");
 
 				            }
 				        
@@ -541,7 +541,7 @@ function clearFunction() {
 				                    $("#animateon").val(opts.animateon).selectmenu("refresh");
 				                    $("#mycolors").val(opts.mycolors).selectmenu("refresh");
 				                    $("input[value='" + opts.timeformat + "']").attr("checked",true).checkboxradio("refresh");
-								    $("input[value='" + opts.loopOpenaps + "']").attr("checked",true).checkboxradio("refresh");
+			                            $("input[value='" + opts.loopOpenaps + "']").attr("checked",true).checkboxradio("refresh");
 
 				                } else {
 				                    console.log("no data");
