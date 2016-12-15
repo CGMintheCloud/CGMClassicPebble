@@ -39,10 +39,18 @@ function clearFunction() {
 						ie:https://name.azurewebsites.net
 					</div>
 				</div>
+                
+        
 				<div data-role="fieldcontain">
-					<label for="loopOpenaps"><strong>Loop or OpenAps:</strong></label><br>
-					<label><input id="LoopOpenaps" name="LoopOpenaps" type="radio" value="0"> Loop</label> <label><input id="LoopOpenaps" name="LoopOpenaps" type="radio" value="1"> OpenAps</label><br>
-				</div>
+                					<label for="loopOpenaps"><strong>Loop or OpenAps:</strong></label><br>
+
+                		<fieldset data-role="controlgroup" data-type="horizontal" id="LoopOpenaps">
+
+
+					<label><input id="LoopOpenaps" name="LoopOpenaps" required="" type="radio" value="0"> Loop</label> 
+                    <label><input id="LoopOpenaps" name="LoopOpenaps" type="radio" value="1"> OpenAps</label><br>
+				</fieldset>
+                </div>
 				<div data-role="fieldcontain">
 					<label for="t1name"><strong>Enter T1 Name:</strong> <input id="t1name" name="t1name" type="text"></label>
 					<div data-role="fieldcontain">
